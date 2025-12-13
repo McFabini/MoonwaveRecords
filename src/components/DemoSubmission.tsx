@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Upload, Music2, CheckCircle, AlertCircle } from 'lucide-react';
+import { Link2, Music2, CheckCircle, AlertCircle, GraduationCap, Calculator, Megaphone, FileText } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
@@ -8,6 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Card } from './ui/card';
 import { toast } from 'sonner@2.0.3';
 import { motion } from 'motion/react';
+import { Switch } from './ui/switch';
+import { Checkbox } from './ui/checkbox';
 
 export function DemoSubmission() {
   const [formData, setFormData] = useState({
@@ -18,10 +20,13 @@ export function DemoSubmission() {
     customGenre: '',
     package: '',
     extraMinutes: '',
+    demoLink: '',
     socialLinks: '',
     description: '',
+    isStudent: false,
+    grooverPromotion: false,
+    publishingService: false,
   });
-  const [file, setFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (
@@ -31,21 +36,59 @@ export function DemoSubmission() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const selectedFile = e.target.files[0];
-      // Vérifier la taille (50 MB max)
-      if (selectedFile.size > 50 * 1024 * 1024) {
-        toast.error('Fichier trop volumineux', {
-          description: 'La taille maximale est de 50 MB.',
-        });
-        return;
-      }
-      setFile(selectedFile);
-      toast.success('Fichier chargé', {
-        description: `${selectedFile.name} (${(selectedFile.size / 1024 / 1024).toFixed(2)} MB)`,
-      });
+  // Fonction pour calculer le coût total TTC
+  const calculateTotalCost = () => {
+    if (!formData.package) return null;
+
+    let baseCost = 0;
+    let extraCostPerUnit = 0;
+    
+    // Prix de base selon le package (HT)
+    if (formData.package === 'single') {
+      baseCost = 30;
+      extraCostPerUnit = 10; // 10€ par minute supplémentaire
+    } else if (formData.package === 'ep') {
+      baseCost = 60;
+      extraCostPerUnit = 15; // 15€ par piste supplémentaire
+    } else if (formData.package === 'album') {
+      baseCost = 120;
+      extraCostPerUnit = 10; // 10€ par piste supplémentaire
     }
+
+    // Calcul des frais supplémentaires
+    const extraUnits = parseInt(formData.extraMinutes) || 0;
+    const extraCost = extraUnits * extraCostPerUnit;
+    
+    // Total avant réduction (HT)
+    let totalCostHT = baseCost + extraCost;
+    
+    // Réduction étudiant (-50%)
+    if (formData.isStudent) {
+      totalCostHT = totalCostHT / 2;
+    }
+
+    // Services additionnels HT (pas de réduction étudiant sur ces services)
+    const grooverCostHT = formData.grooverPromotion ? 20 : 0;
+    const publishingCostHT = formData.publishingService ? 70 : 0;
+    const additionalServicesCostHT = grooverCostHT + publishingCostHT;
+    
+    // Total HT
+    const totalHT = totalCostHT + additionalServicesCostHT;
+    
+    // Application de la TVA (×1.2 = +20%)
+    const totalTTC = totalHT * 1.2;
+
+    return {
+      baseCost,
+      extraCost,
+      totalCostHT,
+      isStudent: formData.isStudent,
+      grooverCostHT,
+      publishingCostHT,
+      additionalServicesCostHT,
+      totalHT,
+      totalTTC,
+    };
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -78,47 +121,40 @@ export function DemoSubmission() {
         return;
       }
 
-      if (!file) {
-        toast.error('Fichier audio requis', {
-          description: 'Veuillez télécharger votre démo.',
+      if (!formData.demoLink) {
+        toast.error('Lien de démo requis', {
+          description: 'Veuillez fournir un lien vers votre démo.',
         });
         setIsSubmitting(false);
         return;
       }
 
-      // Calcul du coût estim
-      let estimatedCost = 0;
-      if (formData.package === 'single') {
-        estimatedCost = 30 + (parseInt(formData.extraMinutes) || 0) * 10;
-      } else if (formData.package === 'ep') {
-        estimatedCost = 60 + (parseInt(formData.extraMinutes) || 0) * 15;
-      } else if (formData.package === 'album') {
-        estimatedCost = 120 + (parseInt(formData.extraMinutes) || 0) * 10;
+      // Calcul du coût total TTC
+      const totalCost = calculateTotalCost();
+      if (!totalCost) {
+        toast.error('Erreur de calcul du coût', {
+          description: 'Veuillez vérifier vos entrées.',
+        });
+        setIsSubmitting(false);
+        return;
       }
 
-      // Créer un FormData pour envoyer le fichier
-      const formDataToSend = new FormData();
-      formDataToSend.append('demoFile', file);
-      formDataToSend.append('artistName', formData.artistName);
-      formDataToSend.append('email', formData.email);
-      formDataToSend.append('phone', formData.phone);
-      formDataToSend.append('genre', formData.genre);
-      formDataToSend.append('customGenre', formData.customGenre);
-      formDataToSend.append('package', formData.package);
-      formDataToSend.append('extraMinutes', formData.extraMinutes);
-      formDataToSend.append('socialLinks', formData.socialLinks);
-      formDataToSend.append('description', formData.description);
-      formDataToSend.append('estimatedCost', `${estimatedCost}€`);
+      // Préparer les données à envoyer
+      const dataToSend = {
+        ...formData,
+        estimatedCost: `${totalCost.totalTTC}€`,
+      };
 
-      // Envoi vers le backend maison
-      const response = await fetch('http://localhost:3001/api/demo', {
+      // Envoi vers Formspree
+      const response = await fetch('https://formspree.io/f/mjknllpl', {
         method: 'POST',
-        body: formDataToSend,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataToSend),
       });
 
-      const data = await response.json();
-
-      if (response.ok && data.success) {
+      if (response.ok) {
         toast.success('Démo envoyée avec succès!', {
           description: 'Notre équipe A&R l\'écoutera dans les prochains jours.',
         });
@@ -132,23 +168,20 @@ export function DemoSubmission() {
           customGenre: '',
           package: '',
           extraMinutes: '',
+          demoLink: '',
           socialLinks: '',
           description: '',
+          isStudent: false,
+          grooverPromotion: false,
+          publishingService: false,
         });
-        setFile(null);
-        
-        // Réinitialiser l'input file
-        const fileInput = document.getElementById('file') as HTMLInputElement;
-        if (fileInput) {
-          fileInput.value = '';
-        }
       } else {
-        throw new Error(data.message || 'Erreur lors de l\'envoi');
+        throw new Error('Erreur lors de l\'envoi');
       }
     } catch (error) {
       console.error('Erreur lors de l\'envoi:', error);
       toast.error('Erreur lors de l\'envoi', {
-        description: error instanceof Error ? error.message : 'Veuillez vérifier que le serveur est lancé (npm run server)',
+        description: 'Veuillez réessayer plus tard.',
       });
     } finally {
       setIsSubmitting(false);
@@ -281,9 +314,9 @@ export function DemoSubmission() {
                       <SelectValue placeholder="Sélectionnez un package" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="single">Single - 30€ (base 3min)</SelectItem>
-                      <SelectItem value="ep">EP - 60€ (base 3 pistes)</SelectItem>
-                      <SelectItem value="album">Album - 120€ (base 10 pistes)</SelectItem>
+                      <SelectItem value="single">Single - 30€ HT (base 3min)</SelectItem>
+                      <SelectItem value="ep">EP - 60€ HT (base 3 pistes)</SelectItem>
+                      <SelectItem value="album">Album - 120€ HT (base 10 pistes)</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -292,9 +325,9 @@ export function DemoSubmission() {
                 {formData.package && (
                   <div className="space-y-2">
                     <Label htmlFor="extraMinutes">
-                      {formData.package === 'single' && 'Minutes supplémentaires (+10€/min)'}
-                      {formData.package === 'ep' && 'Pistes supplémentaires (+15€/piste)'}
-                      {formData.package === 'album' && 'Pistes supplémentaires (+10€/piste)'}
+                      {formData.package === 'single' && 'Minutes supplémentaires (+10€ HT/min)'}
+                      {formData.package === 'ep' && 'Pistes supplémentaires (+15€ HT/piste)'}
+                      {formData.package === 'album' && 'Pistes supplémentaires (+10€ HT/piste)'}
                     </Label>
                     <Input
                       id="extraMinutes"
@@ -312,6 +345,20 @@ export function DemoSubmission() {
                     />
                   </div>
                 )}
+
+                {/* Demo Link */}
+                <div className="space-y-2">
+                  <Label htmlFor="demoLink">Lien vers votre démo * (50 MB max)</Label>
+                  <Input
+                    id="demoLink"
+                    name="demoLink"
+                    value={formData.demoLink}
+                    onChange={handleInputChange}
+                    placeholder="https://www.soundcloud.com/your-demo"
+                    required
+                    className="bg-input-background border-border"
+                  />
+                </div>
 
                 {/* Social Links */}
                 <div className="space-y-2">
@@ -342,62 +389,195 @@ export function DemoSubmission() {
                   />
                 </div>
 
-                {/* File Upload */}
-                <div className="space-y-2">
-                  <Label htmlFor="file">Télécharger votre démo * (50 MB max)</Label>
-                  <div 
-                    className="relative cursor-pointer group"
-                    onClick={() => document.getElementById('file')?.click()}
-                  >
-                    <div className={`
-                      border-2 border-dashed rounded-lg p-8 text-center transition-all
-                      ${file 
-                        ? 'border-primary bg-primary/5' 
-                        : 'border-border bg-input-background hover:border-primary hover:bg-primary/5'
-                      }
-                    `}>
-                      <Upload className={`
-                        w-12 h-12 mx-auto mb-4 transition-transform group-hover:scale-110
-                        ${file ? 'text-primary' : 'text-muted-foreground'}
-                      `} />
-                      
-                      {file ? (
-                        <div className="space-y-2">
-                          <p className="text-primary">✓ Fichier chargé</p>
-                          <p className="text-sm">{file.name}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {(file.size / 1024 / 1024).toFixed(2)} MB
-                          </p>
-                          <p className="text-xs text-muted-foreground mt-3">
-                            Cliquez pour changer de fichier
-                          </p>
-                        </div>
-                      ) : (
-                        <div className="space-y-2">
-                          <p className="text-foreground">
-                            Cliquez pour sélectionner votre démo
-                          </p>
-                          <p className="text-sm text-muted-foreground">
-                            MP3, WAV, FLAC, AAC, OGG, M4A
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            Maximum 50 MB
-                          </p>
-                        </div>
-                      )}
+                {/* Student Status */}
+                <div className="flex items-center justify-between p-4 rounded-lg bg-primary/5 border border-primary/20">
+                  <div className="flex items-center gap-3">
+                    <GraduationCap className="w-5 h-5 text-primary" />
+                    <div>
+                      <Label htmlFor="isStudent" className="cursor-pointer">
+                        Êtes-vous étudiant(e) ?
+                      </Label>
+                      <p className="text-xs text-muted-foreground">
+                        -50% de réduction sur tous les packages
+                      </p>
                     </div>
-                    
-                    <Input
-                      id="file"
-                      name="file"
-                      type="file"
-                      accept="audio/*,.mp3,.wav,.flac,.aac,.ogg,.m4a"
-                      onChange={handleFileChange}
-                      className="hidden"
-                      required
-                    />
+                  </div>
+                  <Switch
+                    id="isStudent"
+                    checked={formData.isStudent}
+                    onCheckedChange={(checked) => 
+                      setFormData((prev) => ({ ...prev, isStudent: checked }))
+                    }
+                  />
+                </div>
+
+                {/* Additional Services */}
+                <div className="space-y-3">
+                  <Label>Services additionnels (optionnels)</Label>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Groover Promotion */}
+                    <div 
+                      className={`relative p-5 rounded-lg border-2 transition-all ${
+                        formData.grooverPromotion 
+                          ? 'border-accent bg-accent/5' 
+                          : 'border-border bg-card hover:border-accent/50'
+                      }`}
+                    >
+                      <div className="flex items-start gap-3">
+                        <Checkbox
+                          id="grooverPromotion"
+                          checked={formData.grooverPromotion}
+                          onCheckedChange={(checked) =>
+                            setFormData((prev) => ({ ...prev, grooverPromotion: !!checked }))
+                          }
+                          className="mt-1"
+                        />
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Megaphone className="w-5 h-5 text-accent" />
+                            <Label htmlFor="grooverPromotion" className="cursor-pointer">
+                              Promotion Groover
+                            </Label>
+                          </div>
+                          <p className="text-xs text-muted-foreground mb-3">
+                            Faites découvrir votre musique à des curateurs professionnels
+                          </p>
+                          <div className="flex items-baseline gap-1">
+                            <span className="text-2xl text-accent">20€</span>
+                            <span className="text-xs text-muted-foreground">HT</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Publishing Service */}
+                    <div 
+                      className={`relative p-5 rounded-lg border-2 transition-all ${
+                        formData.publishingService 
+                          ? 'border-primary bg-primary/5' 
+                          : 'border-border bg-card hover:border-primary/50'
+                      }`}
+                    >
+                      <div className="flex items-start gap-3">
+                        <Checkbox
+                          id="publishingService"
+                          checked={formData.publishingService}
+                          onCheckedChange={(checked) =>
+                            setFormData((prev) => ({ ...prev, publishingService: !!checked }))
+                          }
+                          className="mt-1"
+                        />
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <FileText className="w-5 h-5 text-primary" />
+                            <Label htmlFor="publishingService" className="cursor-pointer">
+                              Service Publishing
+                            </Label>
+                          </div>
+                          <p className="text-xs text-muted-foreground mb-3">
+                            Gérez vos droits d'auteur et maximisez vos revenus
+                          </p>
+                          <div className="flex items-baseline gap-1">
+                            <span className="text-2xl text-primary">70€</span>
+                            <span className="text-xs text-muted-foreground">HT</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
+
+                {/* Price Simulation */}
+                {formData.package && (() => {
+                  const costDetails = calculateTotalCost();
+                  if (!costDetails) return null;
+
+                  return (
+                    <Card className="bg-gradient-to-br from-primary/10 to-accent/10 border-primary/30 p-6">
+                      <div className="flex items-start gap-3 mb-4">
+                        <Calculator className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
+                        <div className="flex-1">
+                          <h3 className="mb-1">Simulation de paiement</h3>
+                          <p className="text-xs text-muted-foreground mb-4">
+                            Estimation du coût total pour votre projet
+                          </p>
+
+                          <div className="space-y-2">
+                            {/* Prix de base */}
+                            <div className="flex items-center justify-between text-sm">
+                              <span className="text-muted-foreground">
+                                Package {formData.package === 'single' ? 'Single' : formData.package === 'ep' ? 'EP' : 'Album'}
+                              </span>
+                              <span>{costDetails.baseCost}€</span>
+                            </div>
+
+                            {/* Frais supplémentaires */}
+                            {costDetails.extraCost > 0 && (
+                              <div className="flex items-center justify-between text-sm">
+                                <span className="text-muted-foreground">
+                                  {formData.package === 'single' 
+                                    ? `${formData.extraMinutes} minute(s) supplémentaire(s)`
+                                    : `${formData.extraMinutes} piste(s) supplémentaire(s)`}
+                                </span>
+                                <span>+{costDetails.extraCost}€</span>
+                              </div>
+                            )}
+
+                            {/* Réduction étudiant */}
+                            {costDetails.isStudent && (
+                              <div className="flex items-center justify-between text-sm text-primary">
+                                <span className="flex items-center gap-1">
+                                  <GraduationCap className="w-4 h-4" />
+                                  Réduction Étudiant
+                                </span>
+                                <span>-50%</span>
+                              </div>
+                            )}
+
+                            {/* Services additionnels */}
+                            {costDetails.grooverCostHT > 0 && (
+                              <div className="flex items-center justify-between text-sm">
+                                <span className="text-muted-foreground">
+                                  Promotion Groover
+                                </span>
+                                <span>+{costDetails.grooverCostHT}€</span>
+                              </div>
+                            )}
+                            {costDetails.publishingCostHT > 0 && (
+                              <div className="flex items-center justify-between text-sm">
+                                <span className="text-muted-foreground">
+                                  Service de publication
+                                </span>
+                                <span>+{costDetails.publishingCostHT}€</span>
+                              </div>
+                            )}
+
+                            {/* Séparateur */}
+                            <div className="border-t border-border pt-3 mt-3">
+                              <div className="flex items-center justify-between mb-2">
+                                <span className="text-sm text-muted-foreground">Total HT</span>
+                                <span className="text-base">{costDetails.totalHT}€</span>
+                              </div>
+                              <div className="flex items-center justify-between mb-3">
+                                <span className="text-sm text-muted-foreground">TVA (20%)</span>
+                                <span className="text-base">+{(costDetails.totalTTC - costDetails.totalHT).toFixed(2)}€</span>
+                              </div>
+                              <div className="flex items-center justify-between border-t border-border pt-3">
+                                <span className="text-base">Total TTC</span>
+                                <div className="text-right">
+                                  <div className="text-3xl text-primary">
+                                    {costDetails.totalTTC.toFixed(2)}€
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </Card>
+                  );
+                })()}
 
                 {/* Submit Button */}
                 <Button
@@ -413,11 +593,40 @@ export function DemoSubmission() {
 
           {/* Sidebar Info */}
           <div className="space-y-6">
-            {/* Guidelines */}
+            {/* How to Share Demo */}
             <motion.div
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              <Card className="bg-primary/10 border-primary/30 p-6">
+                <div className="flex items-start gap-3 mb-4">
+                  <Link2 className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
+                  <div>
+                    <h3 className="mb-3">Comment partager votre démo</h3>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Uploadez votre démo sur l'une de ces plateformes :
+                    </p>
+                    <ul className="space-y-2 text-sm text-muted-foreground">
+                      <li>🔗 Google Drive</li>
+                      <li>🔗 Dropbox</li>
+                      <li>🔗 WeTransfer</li>
+                      <li>🔗 SwissTransfer</li>
+                      <li>🔗 SoundCloud (privé)</li>
+                    </ul>
+                    <p className="text-xs text-muted-foreground mt-3 italic">
+                      Assurez-vous que le lien est accessible (public ou avec lien de partage).
+                    </p>
+                  </div>
+                </div>
+              </Card>
+            </motion.div>
+
+            {/* Guidelines */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
             >
               <Card className="bg-card border-border p-6">
                 <div className="flex items-start gap-3 mb-4">
@@ -440,7 +649,7 @@ export function DemoSubmission() {
             <motion.div
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
             >
               <Card className="bg-card border-border p-6">
                 <div className="flex items-start gap-3 mb-4">
@@ -453,27 +662,6 @@ export function DemoSubmission() {
                       <li>3. Rendez-vous si sélectionné</li>
                       <li>4. Discussion des opportunités</li>
                     </ul>
-                  </div>
-                </div>
-              </Card>
-            </motion.div>
-
-            {/* Important Note */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-            >
-              <Card className="bg-destructive/10 border-destructive/30 p-6">
-                <div className="flex items-start gap-3">
-                  <AlertCircle className="w-6 h-6 text-destructive flex-shrink-0 mt-1" />
-                  <div>
-                    <h4 className="mb-2 text-sm">Important</h4>
-                    <p className="text-sm text-muted-foreground">
-                      En raison du volume de soumissions, nous ne pouvons répondre qu'aux
-                      démos qui correspondent à notre ligne artistique. Merci de votre
-                      compréhension.
-                    </p>
                   </div>
                 </div>
               </Card>

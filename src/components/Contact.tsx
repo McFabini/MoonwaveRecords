@@ -30,8 +30,8 @@ export function Contact() {
         return;
       }
 
-      // Envoi vers le backend maison
-      const response = await fetch('http://localhost:3001/api/contact', {
+      // Envoi vers Formspree
+      const response = await fetch('https://formspree.io/f/xanrvvlz', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -39,21 +39,19 @@ export function Contact() {
         body: JSON.stringify(formData),
       });
 
-      const data = await response.json();
-
-      if (response.ok && data.success) {
+      if (response.ok) {
         toast.success('Message envoyé avec succès !', {
           description: 'Nous vous répondrons dans les plus brefs délais.',
         });
         
         setFormData({ name: '', email: '', subject: '', message: '' });
       } else {
-        throw new Error(data.message || 'Erreur lors de l\'envoi');
+        throw new Error('Erreur lors de l\'envoi');
       }
     } catch (error) {
       console.error('Erreur lors de l\'envoi:', error);
       toast.error('Erreur lors de l\'envoi', {
-        description: error instanceof Error ? error.message : 'Veuillez vérifier que le serveur est lancé (npm run server)',
+        description: 'Veuillez réessayer plus tard.',
       });
     } finally {
       setIsSubmitting(false);
@@ -175,10 +173,10 @@ export function Contact() {
                   <div>
                     <p className="text-sm text-foreground/60 mb-1">Email</p>
                     <a
-                      href="mailto:contact@moonwaverecords.com"
+                      href="mailto:contact@moonwave-records.com"
                       className="text-foreground hover:text-primary transition-colors"
                     >
-                      contact@moonwaverecords.com
+                      contact@moonwave-records.com
                     </a>
                   </div>
                 </div>
@@ -189,10 +187,10 @@ export function Contact() {
                   <div>
                     <p className="text-sm text-foreground/60 mb-1">Téléphone</p>
                     <a
-                      href="tel:+33123456789"
+                      href="tel:+33749437577"
                       className="text-foreground hover:text-primary transition-colors"
                     >
-                      +33 1 23 45 67 89
+                      +33 7 49 43 75 77
                     </a>
                   </div>
                 </div>
@@ -203,9 +201,9 @@ export function Contact() {
                   <div>
                     <p className="text-sm text-foreground/60 mb-1">Adresse</p>
                     <p className="text-foreground">
-                      123 Avenue de la Musique
+                      4 rue de la forêt
                       <br />
-                      75001 Paris, France
+                      39260 Crenans, France
                     </p>
                   </div>
                 </div>
@@ -225,15 +223,6 @@ export function Contact() {
                     <span>{social.label}</span>
                   </a>
                 ))}
-              </div>
-            </Card>
-
-            <Card className="p-6 bg-gradient-to-br from-primary/20 to-accent/20 border-primary/30">
-              <h4 className="mb-2">Horaires d&apos;ouverture</h4>
-              <div className="space-y-2 text-sm text-foreground/70">
-                <p>Lundi - Vendredi: 9h00 - 18h00</p>
-                <p>Samedi: 10h00 - 16h00</p>
-                <p>Dimanche: Fermé</p>
               </div>
             </Card>
           </div>

@@ -43,7 +43,7 @@ export default function App() {
       <main className="pt-16">
         {currentSection === 'home' && <Hero onNavigate={handleNavigate} />}
         {currentSection === 'artists' && <Artists />}
-        {currentSection === 'services' && <Services />}
+        {currentSection === 'services' && <Services onNavigate={handleNavigate} />}
         {currentSection === 'music' && <Music />}
         {currentSection === 'demos' && <DemoSubmission />}
         {currentSection === 'contact' && <Contact />}

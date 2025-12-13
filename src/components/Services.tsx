@@ -1,17 +1,21 @@
-import { Check, Music, Radio, TrendingUp, Mic, Disc, Share2, GraduationCap, Sparkles, Megaphone, FileText } from 'lucide-react';
+import { Check, Music, Radio, TrendingUp, Mic, Disc, Share2, GraduationCap, Sparkles, Megaphone, FileText, CreditCard, Landmark, Smartphone, Wallet } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { motion } from 'framer-motion';
 
+interface ServicesProps {
+  onNavigate?: (section: string) => void;
+}
+
 const releasePackages = [
   {
     id: 'single',
     icon: Music,
     title: 'Package Single',
-    subtitle: '1 titre - 2min30 inclus',
-    description: 'Parfait pour débuter votre carrière musicale',
+    subtitle: '1 titre - 3min inclus',
+    description: '',
     features: [
       'Sorties illimitées sur toutes les plateformes musicales',
       'Badge d\'Artiste vérifié sur Spotify',
@@ -29,11 +33,11 @@ const releasePackages = [
       'Utilisez votre propre code UPC',
       'Sélection des restrictions géographiques',
       'Chaîne d\'artiste officielle YouTube',
-      'Temps additionnel : +10€ par minute',
+      'Temps additionnel : +5€ par minute',
     ],
     priceNormal: '30€',
     priceStudent: '15€',
-    priceType: '',
+    priceType: 'HT',
     popular: false,
     color: 'from-blue-500/20 to-purple-500/20',
   },
@@ -42,7 +46,7 @@ const releasePackages = [
     icon: Disc,
     title: 'Package EP',
     subtitle: '3 titres inclus',
-    description: 'L\'offre idéale pour les artistes en développement',
+    description: '',
     features: [
       'Sorties illimitées sur toutes les plateformes musicales',
       'Badge d\'Artiste vérifié sur Spotify',
@@ -64,16 +68,16 @@ const releasePackages = [
     ],
     priceNormal: '60€',
     priceStudent: '30€',
-    priceType: '',
-    popular: true,
+    priceType: 'HT',
+    popular: false,
     color: 'from-purple-500/20 to-pink-500/20',
   },
   {
     id: 'album',
     icon: Sparkles,
     title: 'Package Album',
-    subtitle: '7 titres inclus',
-    description: 'L\'expérience complète pour les artistes professionnels',
+    subtitle: '10 titres inclus',
+    description: '',
     features: [
       'Sorties illimitées sur toutes les plateformes musicales',
       'Badge d\'Artiste vérifié sur Spotify',
@@ -91,12 +95,11 @@ const releasePackages = [
       'Utilisez votre propre code UPC',
       'Sélection des restrictions géographiques',
       'Chaîne d\'artiste officielle YouTube',
-      'Artiste Principal supplémentaire : +14,99€',
       'Pistes supplémentaires : +10€ par piste',
     ],
     priceNormal: '120€',
     priceStudent: '60€',
-    priceType: '',
+    priceType: 'HT',
     popular: false,
     color: 'from-pink-500/20 to-purple-500/20',
   },
@@ -109,7 +112,7 @@ const additionalServices = [
     title: 'Campagne Groover',
     description: 'Faites découvrir votre musique à des curateurs professionnels',
     services: [
-      { name: 'Campagne promotionnelle Groover', price: '20€', studentPrice: '20€' },
+      { name: 'Campagne promotionnelle Groover', price: '20€ HT', studentPrice: '20€ HT' },
     ],
   },
   {
@@ -118,12 +121,12 @@ const additionalServices = [
     title: 'Service Publishing',
     description: 'Gérez vos droits d\'auteur et maximisez vos revenus',
     services: [
-      { name: 'Service Publishing complet', price: '40€', studentPrice: '40€' },
+      { name: 'Service Publishing complet', price: '70€ HT', studentPrice: '70€ HT' },
     ],
   },
 ];
 
-export function Services() {
+export function Services({ onNavigate }: ServicesProps) {
   return (
     <section className="min-h-screen py-20 px-4">
       <div className="container mx-auto max-w-7xl">
@@ -194,7 +197,8 @@ export function Services() {
                         {/* Price */}
                         <div className="text-center py-4 border-y border-border">
                           <div className="text-4xl mb-1">{pkg.priceNormal}</div>
-                          <div className="text-sm text-muted-foreground">Paiement unique</div>
+                          <div className="text-xs text-muted-foreground">HT</div>
+                          <div className="text-sm text-muted-foreground mt-2">Paiement unique</div>
                         </div>
 
                         {/* Features */}
@@ -209,13 +213,10 @@ export function Services() {
 
                         {/* CTA */}
                         <Button 
-                          className={`w-full ${
-                            pkg.popular 
-                              ? 'bg-gradient-to-r from-primary to-accent hover:opacity-90' 
-                              : 'bg-primary hover:bg-primary/90'
-                          }`}
+                          className="w-full bg-primary hover:bg-primary/90"
+                          onClick={() => onNavigate?.('demos')}
                         >
-                          Choisir ce package
+                          Soumettre une Démo
                         </Button>
                       </CardContent>
                     </Card>
@@ -301,13 +302,10 @@ export function Services() {
 
                         {/* CTA */}
                         <Button 
-                          className={`w-full ${
-                            pkg.popular 
-                              ? 'bg-gradient-to-r from-primary to-accent hover:opacity-90' 
-                              : 'bg-primary hover:bg-primary/90'
-                          }`}
+                          className="w-full bg-primary hover:bg-primary/90"
+                          onClick={() => onNavigate?.('demos')}
                         >
-                          Choisir ce package
+                          Soumettre une Démo
                         </Button>
                       </CardContent>
                     </Card>
@@ -367,36 +365,46 @@ export function Services() {
             Chaque artiste est unique. Discutons ensemble de vos besoins et créons une offre
             sur mesure adaptée à votre projet et votre budget.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-gradient-to-r from-primary to-accent hover:opacity-90">
-              Demander un devis
-            </Button>
-            <Button size="lg" variant="outline">
-              Prendre rendez-vous
-            </Button>
-          </div>
+          <Button size="lg" className="bg-gradient-to-r from-primary to-accent hover:opacity-90" onClick={() => onNavigate?.('contact')}>
+            Envoyer un e-mail
+          </Button>
         </div>
 
         {/* Payment Options */}
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="bg-card/50 border-border text-center p-6">
-            <h4 className="mb-2">Paiement sécurisé</h4>
+        <div className="mt-12">
+          <div className="text-center mb-8">
+            <h3 className="text-2xl mb-2">Moyens de paiement acceptés</h3>
             <p className="text-sm text-muted-foreground">
-              CB, PayPal, virement bancaire
+              Payez en toute sécurité avec votre méthode préférée
             </p>
-          </Card>
-          <Card className="bg-card/50 border-border text-center p-6">
-            <h4 className="mb-2">Paiement en plusieurs fois</h4>
-            <p className="text-sm text-muted-foreground">
-              Jusqu'à 4x sans frais (packages EP et Album)
-            </p>
-          </Card>
-          <Card className="bg-card/50 border-border text-center p-6">
-            <h4 className="mb-2">Garantie satisfait ou remboursé</h4>
-            <p className="text-sm text-muted-foreground">
-              30 jours pour changer d'avis
-            </p>
-          </Card>
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 max-w-4xl mx-auto">
+            <Card className="bg-card/50 border-border hover:border-primary/30 transition-all p-6 flex flex-col items-center justify-center gap-3">
+              <CreditCard className="w-8 h-8 text-primary" />
+              <p className="text-sm text-center">Carte Bancaire</p>
+            </Card>
+            
+            <Card className="bg-card/50 border-border hover:border-primary/30 transition-all p-6 flex flex-col items-center justify-center gap-3">
+              <Landmark className="w-8 h-8 text-primary" />
+              <p className="text-sm text-center">Virement Bancaire</p>
+            </Card>
+            
+            <Card className="bg-card/50 border-border hover:border-primary/30 transition-all p-6 flex flex-col items-center justify-center gap-3">
+              <Wallet className="w-8 h-8 text-primary" />
+              <p className="text-sm text-center">Revolut Pay</p>
+            </Card>
+            
+            <Card className="bg-card/50 border-border hover:border-primary/30 transition-all p-6 flex flex-col items-center justify-center gap-3">
+              <Smartphone className="w-8 h-8 text-primary" />
+              <p className="text-sm text-center">Google Pay</p>
+            </Card>
+            
+            <Card className="bg-card/50 border-border hover:border-primary/30 transition-all p-6 flex flex-col items-center justify-center gap-3">
+              <Smartphone className="w-8 h-8 text-primary" />
+              <p className="text-sm text-center">Apple Pay</p>
+            </Card>
+          </div>
         </div>
       </div>
     </section>

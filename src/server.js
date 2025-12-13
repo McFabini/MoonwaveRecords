@@ -2,13 +2,6 @@ import express from 'express';
 import cors from 'cors';
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
-import multer from 'multer';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-// Pour __dirname en ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 dotenv.config();
 
@@ -40,27 +33,8 @@ transporter.verify((error, success) => {
   }
 });
 
-// Configuration de multer pour le téléchargement de fichiers
-const storage = multer.memoryStorage(); // Stockage en mémoire pour envoyer directement en pièce jointe
-
-const upload = multer({
-  storage: storage,
-  limits: {
-    fileSize: 50 * 1024 * 1024, // 50 MB max
-  },
-  fileFilter: (req, file, cb) => {
-    // Accepter uniquement les fichiers audio
-    const allowedTypes = ['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/x-wav', 'audio/flac', 'audio/aac', 'audio/ogg'];
-    if (allowedTypes.includes(file.mimetype) || file.originalname.match(/\.(mp3|wav|flac|aac|ogg|m4a)$/i)) {
-      cb(null, true);
-    } else {
-      cb(new Error('Type de fichier non autorisé. Formats acceptés: MP3, WAV, FLAC, AAC, OGG, M4A'));
-    }
-  },
-});
-
 // Route pour la soumission de démo
-app.post('/api/demo', upload.single('demoFile'), async (req, res) => {
+app.post('/api/demo', async (req, res) => {
   try {
     const {
       artistName,
@@ -70,6 +44,7 @@ app.post('/api/demo', upload.single('demoFile'), async (req, res) => {
       customGenre,
       package: packageType,
       extraMinutes,
+      demoLink,
       socialLinks,
       description,
       estimatedCost,
@@ -83,10 +58,10 @@ app.post('/api/demo', upload.single('demoFile'), async (req, res) => {
       });
     }
 
-    if (!req.file) {
+    if (!demoLink) {
       return res.status(400).json({
         success: false,
-        message: 'Fichier audio requis',
+        message: 'Lien vers la démo requis',
       });
     }
 
@@ -114,6 +89,7 @@ app.post('/api/demo', upload.single('demoFile'), async (req, res) => {
 
         <div style="background: #fefce8; padding: 20px; border-radius: 8px; margin: 20px 0;">
           <h3 style="color: #1e293b; margin-top: 0;">🎧 Démo & Réseaux</h3>
+          <p><strong>Lien vers la démo:</strong> <a href="${demoLink}">${demoLink}</a></p>
           <p><strong>Réseaux sociaux:</strong></p>
           <p style="white-space: pre-line;">${socialLinks || 'Non renseigné'}</p>
         </div>
@@ -137,16 +113,6 @@ app.post('/api/demo', upload.single('demoFile'), async (req, res) => {
       subject: `🎵 Nouvelle Démo - ${artistName} (${packageType?.toUpperCase()})`,
       html: mailContent,
     };
-
-    // Ajouter la pièce jointe si un fichier a été uploadé
-    if (req.file) {
-      mailOptions.attachments = [
-        {
-          filename: req.file.originalname,
-          content: req.file.buffer,
-        },
-      ];
-    }
 
     await transporter.sendMail(mailOptions);
 

@@ -8,7 +8,7 @@ const artists = [
     id: 1,
     name: 'McFabini Beats',
     genre: 'Musique de film',
-    image: 'https://images.unsplash.com/photo-1729709606104-32dbcf34c189?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMHByb2R1Y2VyJTIwc3R1ZGlvJTIwaGVhZHBob25lc3xlbnwxfHx8fDE3NjU2NTA5NjJ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+    image: 'https://i.ibb.co/gM1W8wpV/copy.png',
     bio: 'Artiste de musique à l\'image qui explore les styles électro, 90s et rap',
     releases: 5,
     socials: {

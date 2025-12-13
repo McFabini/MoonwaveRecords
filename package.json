@@ -42,10 +42,8 @@
           "input-otp": "^1.4.2",
           "lucide-react": "^0.487.0",
           "motion": "*",
-          "multer": "*",
           "next-themes": "^0.4.6",
           "nodemailer": "*",
-          "path": "*",
           "react": "^18.3.1",
           "react-day-picker": "^8.10.1",
           "react-dom": "^18.3.1",
@@ -54,7 +52,6 @@
           "recharts": "^2.15.2",
           "sonner": "^2.0.3",
           "tailwind-merge": "*",
-          "url": "*",
           "vaul": "^1.1.2",
           "vite": "*"
       },
