@@ -1,16 +1,8 @@
 import { useState } from 'react';
-import { Play, Pause, Music2, User } from 'lucide-react';
+import { Play, Pause, Music2, Disc, Album } from 'lucide-react';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
-
-interface Artist {
-  id: number;
-  name: string;
-  genre: string;
-  image: string;
-  bio: string;
-}
 
 interface Album {
   id: number;
@@ -20,60 +12,28 @@ interface Album {
   year: number;
 }
 
-const artists: Artist[] = [
-  {
-    id: 1,
-    name: 'Luna Eclipse',
-    genre: 'Électro Dream',
-    image: 'https://images.unsplash.com/photo-1611936042825-0c0edbf09893?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMGFydGlzdCUyMHN0dWRpb3xlbnwxfHx8fDE3NjUzNzk3NTB8MA&ixlib=rb-4.1.0&q=80&w=1080',
-    bio: 'Artiste visionnaire mélangeant sonorités électroniques et mélodies lunaires',
-  },
-  {
-    id: 2,
-    name: 'Neon Waves',
-    genre: 'Synthwave',
-    image: 'https://images.unsplash.com/photo-1690013429722-87852aae164b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb25jZXJ0JTIwc3RhZ2UlMjBsaWdodHN8ZW58MXx8fHwxNzY1MzIyMjk5fDA&ixlib=rb-4.1.0&q=80&w=1080',
-    bio: 'Pionnier du son rétro-futuriste avec des influences des années 80',
-  },
-  {
-    id: 3,
-    name: 'Starlight Collective',
-    genre: 'Ambient',
-    image: 'https://images.unsplash.com/photo-1611936042825-0c0edbf09893?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMGFydGlzdCUyMHN0dWRpb3xlbnwxfHx8fDE3NjUzNzk3NTB8MA&ixlib=rb-4.1.0&q=80&w=1080',
-    bio: 'Collectif créant des paysages sonores immersifs et contemplatifs',
-  },
-];
+interface Single {
+  id: number;
+  title: string;
+  artist: string;
+  cover: string;
+  year: number;
+}
 
-const albums: Album[] = [
-  {
-    id: 1,
-    title: 'Midnight Frequencies',
-    artist: 'Luna Eclipse',
-    cover: 'https://images.unsplash.com/photo-1629426958038-a4cb6e3830a0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx2aW55bCUyMHJlY29yZHMlMjBtdXNpY3xlbnwxfHx8fDE3NjUzNTY5MTd8MA&ixlib=rb-4.1.0&q=80&w=1080',
-    year: 2024,
-  },
-  {
-    id: 2,
-    title: 'Neon Dreams',
-    artist: 'Neon Waves',
-    cover: 'https://images.unsplash.com/photo-1629426958038-a4cb6e3830a0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx2aW55bCUyMHJlY29yZHMlMjBtdXNpY3xlbnwxfHx8fDE3NjUzNTY5MTd8MA&ixlib=rb-4.1.0&q=80&w=1080',
-    year: 2024,
-  },
-  {
-    id: 3,
-    title: 'Cosmic Echoes',
-    artist: 'Starlight Collective',
-    cover: 'https://images.unsplash.com/photo-1629426958038-a4cb6e3830a0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx2aW55bCUyMHJlY29yZHMlMjBtdXNpY3xlbnwxfHx8fDE3NjUzNTY5MTd8MA&ixlib=rb-4.1.0&q=80&w=1080',
-    year: 2023,
-  },
-  {
-    id: 4,
-    title: 'Purple Horizons',
-    artist: 'Luna Eclipse',
-    cover: 'https://images.unsplash.com/photo-1629426958038-a4cb6e3830a0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx2aW55bCUyMHJlY29yZHMlMjBtdXNpY3xlbnwxfHx8fDE3NjUzNTY5MTd8MA&ixlib=rb-4.1.0&q=80&w=1080',
-    year: 2023,
-  },
-];
+interface EP {
+  id: number;
+  title: string;
+  artist: string;
+  cover: string;
+  year: number;
+  tracks: number;
+}
+
+const albums: Album[] = [];
+
+const singles: Single[] = [];
+
+const eps: EP[] = [];
 
 export function Music() {
   const [playingAlbum, setPlayingAlbum] = useState<number | null>(null);
@@ -99,11 +59,98 @@ export function Music() {
           </p>
         </div>
 
-        {/* Albums */}
-        <div>
+        {/* Singles */}
+        <div className="mb-16">
           <div className="flex items-center gap-2 mb-8">
             <Music2 className="w-6 h-6 text-primary" />
-            <h3 className="text-2xl">Albums & Singles</h3>
+            <h3 className="text-2xl">Singles</h3>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {singles.map((single) => (
+              <Card
+                key={single.id}
+                className="overflow-hidden bg-card border-border hover:border-primary transition-all duration-300 group"
+              >
+                <div className="relative aspect-square overflow-hidden">
+                  <img
+                    src={single.cover}
+                    alt={single.title}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-background/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                    <Button
+                      size="lg"
+                      onClick={() => togglePlay(single.id)}
+                      className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full w-16 h-16 p-0"
+                    >
+                      {playingAlbum === single.id ? (
+                        <Pause className="w-8 h-8" />
+                      ) : (
+                        <Play className="w-8 h-8 ml-1" />
+                      )}
+                    </Button>
+                  </div>
+                </div>
+                <div className="p-4">
+                  <h4 className="mb-1 text-sm">{single.title}</h4>
+                  <p className="text-sm text-foreground/60">{single.artist}</p>
+                  <p className="text-xs text-foreground/40 mt-1">{single.year}</p>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        {/* EPs */}
+        <div className="mb-16">
+          <div className="flex items-center gap-2 mb-8">
+            <Disc className="w-6 h-6 text-primary" />
+            <h3 className="text-2xl">EPs</h3>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {eps.map((ep) => (
+              <Card
+                key={ep.id}
+                className="overflow-hidden bg-card border-border hover:border-primary transition-all duration-300 group"
+              >
+                <div className="relative aspect-square overflow-hidden">
+                  <img
+                    src={ep.cover}
+                    alt={ep.title}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-background/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                    <Button
+                      size="lg"
+                      onClick={() => togglePlay(ep.id)}
+                      className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full w-16 h-16 p-0"
+                    >
+                      {playingAlbum === ep.id ? (
+                        <Pause className="w-8 h-8" />
+                      ) : (
+                        <Play className="w-8 h-8 ml-1" />
+                      )}
+                    </Button>
+                  </div>
+                </div>
+                <div className="p-4">
+                  <div className="flex items-center justify-between mb-1">
+                    <h4 className="text-sm">{ep.title}</h4>
+                    <Badge variant="secondary" className="text-xs">{ep.tracks} pistes</Badge>
+                  </div>
+                  <p className="text-sm text-foreground/60">{ep.artist}</p>
+                  <p className="text-xs text-foreground/40 mt-1">{ep.year}</p>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        {/* Albums */}
+        <div className="mb-16">
+          <div className="flex items-center gap-2 mb-8">
+            <Album className="w-6 h-6 text-primary" />
+            <h3 className="text-2xl">Albums</h3>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {albums.map((album) => (

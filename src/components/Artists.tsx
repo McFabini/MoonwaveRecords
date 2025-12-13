@@ -1,58 +1,20 @@
 import { ImageWithFallback } from './figma/ImageWithFallback';
-import { Instagram, Twitter, Facebook, Music } from 'lucide-react';
+import { Instagram, Youtube, Facebook, Music } from 'lucide-react';
 import { Badge } from './ui/badge';
+import mcfabiniImage from 'figma:asset/6ba62b9ed6b80384c7c1adef9bccf22d29bb25e2.png';
 
 const artists = [
   {
     id: 1,
-    name: 'Luna Nova',
-    genre: 'Electronic Pop',
-    image: 'https://images.unsplash.com/photo-1666143208844-ac2f983b171a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzaW5nZXIlMjBtaWNyb3Bob25lJTIwc3RhZ2V8ZW58MXx8fHwxNzY1NDkxNDY2fDA&ixlib=rb-4.1.0&q=80&w=1080',
-    bio: 'Artiste électro-pop émergente avec un son unique mêlant synthés vintage et production moderne.',
+    name: 'McFabini Beats',
+    genre: 'Musique de film',
+    image: mcfabiniImage,
+    bio: 'Artiste de musique à l\'image qui explore les styles électro, 90s et rap',
     releases: 5,
     socials: {
-      instagram: '#',
-      twitter: '#',
-      facebook: '#',
-    },
-  },
-  {
-    id: 2,
-    name: 'Shadow Beats',
-    genre: 'Hip-Hop',
-    image: 'https://images.unsplash.com/photo-1728301078583-53bcfdcc2861?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMGFydGlzdCUyMHBlcmZvcm1pbmd8ZW58MXx8fHwxNzY1NTA1NTAxfDA&ixlib=rb-4.1.0&q=80&w=1080',
-    bio: 'Producteur et rappeur talentueux reconnu pour ses lyrics percutants et ses beats innovants.',
-    releases: 8,
-    socials: {
-      instagram: '#',
-      twitter: '#',
-      facebook: '#',
-    },
-  },
-  {
-    id: 3,
-    name: 'DJ Neon',
-    genre: 'House / Techno',
-    image: 'https://images.unsplash.com/photo-1647160494152-4c8eb24a844b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkaiUyMG1peGluZyUyMG11c2ljfGVufDF8fHx8MTc2NTM5NDYxN3ww&ixlib=rb-4.1.0&q=80&w=1080',
-    bio: 'DJ et producteur de musique électronique spécialisé dans la house progressive et la techno mélodique.',
-    releases: 12,
-    socials: {
-      instagram: '#',
-      twitter: '#',
-      facebook: '#',
-    },
-  },
-  {
-    id: 4,
-    name: 'Stellar Waves',
-    genre: 'Ambient / Chillwave',
-    image: 'https://images.unsplash.com/photo-1637759898746-283c2d6c24c5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMHByb2R1Y2VyJTIwc3R1ZGlvfGVufDF8fHx8MTc2NTQxODYxNHww&ixlib=rb-4.1.0&q=80&w=1080',
-    bio: 'Créateur de paysages sonores atmosphériques qui transportent l\'auditeur dans des univers cosmiques.',
-    releases: 6,
-    socials: {
-      instagram: '#',
-      twitter: '#',
-      facebook: '#',
+      instagram: 'https://www.instagram.com/fabi1_manuel_capelli/',
+      youtube: 'https://www.youtube.com/channel/UCVhcQZKI7aRuw4dKsqi0ONg',
+      facebook: 'https://www.facebook.com/FabienManuelCapelli69/',
     },
   },
 ];
@@ -115,11 +77,11 @@ export function Artists() {
                     <Instagram className="w-5 h-5" />
                   </a>
                   <a
-                    href={artist.socials.twitter}
+                    href={artist.socials.youtube}
                     className="w-10 h-10 bg-secondary rounded-full flex items-center justify-center hover:bg-primary transition-colors"
-                    aria-label="Twitter"
+                    aria-label="Youtube"
                   >
-                    <Twitter className="w-5 h-5" />
+                    <Youtube className="w-5 h-5" />
                   </a>
                   <a
                     href={artist.socials.facebook}

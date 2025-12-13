@@ -1,6 +1,10 @@
 import { Music, Heart } from 'lucide-react';
 
-export function Footer() {
+interface FooterProps {
+  onNavigate: (section: string) => void;
+}
+
+export function Footer({ onNavigate }: FooterProps) {
   const currentYear = new Date().getFullYear();
 
   return (
@@ -23,24 +27,24 @@ export function Footer() {
             <h4 className="mb-4">Navigation</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="#" className="text-foreground/60 hover:text-primary transition-colors">
+                <button onClick={() => onNavigate('home')} className="text-foreground/60 hover:text-primary transition-colors">
                   Accueil
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#" className="text-foreground/60 hover:text-primary transition-colors">
+                <button onClick={() => onNavigate('artists')} className="text-foreground/60 hover:text-primary transition-colors">
                   Artistes
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#" className="text-foreground/60 hover:text-primary transition-colors">
+                <button onClick={() => onNavigate('services')} className="text-foreground/60 hover:text-primary transition-colors">
                   Services
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#" className="text-foreground/60 hover:text-primary transition-colors">
+                <button onClick={() => onNavigate('music')} className="text-foreground/60 hover:text-primary transition-colors">
                   Musique
-                </a>
+                </button>
               </li>
             </ul>
           </div>
@@ -50,24 +54,24 @@ export function Footer() {
             <h4 className="mb-4">Légal</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="#" className="text-foreground/60 hover:text-primary transition-colors">
+                <button onClick={() => onNavigate('legal')} className="text-foreground/60 hover:text-primary transition-colors">
                   Mentions légales
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#" className="text-foreground/60 hover:text-primary transition-colors">
+                <button onClick={() => onNavigate('privacy')} className="text-foreground/60 hover:text-primary transition-colors">
                   Politique de confidentialité
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#" className="text-foreground/60 hover:text-primary transition-colors">
+                <button onClick={() => onNavigate('terms')} className="text-foreground/60 hover:text-primary transition-colors">
                   CGV
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#" className="text-foreground/60 hover:text-primary transition-colors">
+                <button onClick={() => onNavigate('cookies')} className="text-foreground/60 hover:text-primary transition-colors">
                   Cookies
-                </a>
+                </button>
               </li>
             </ul>
           </div>
@@ -78,16 +82,16 @@ export function Footer() {
             <p className="text-sm text-foreground/60 mb-4">
               Restez informés de nos dernières sorties et événements
             </p>
-            <div className="flex gap-2">
-              <input
-                type="email"
-                placeholder="Email"
-                className="flex-1 px-3 py-2 bg-input-background border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-              <button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors">
-                OK
-              </button>
-            </div>
+            <iframe 
+              width="540" 
+              height="305" 
+              src="https://2f1373d4.sibforms.com/serve/MUIFADpor47MxNCzfchbs7eSRbE9ZjgTmwLX1HVol9lYAsUtBPNECTY_G7rR4g2MPQFlPomNXV5WKK_2hDsT1xBh9gDXITr6OzSnuNPcXzTNdqikR9Dw0M17wT9iv1IztX7yNAUr82lzAiDNlcTBGgQSd-TBSgKhzCuRC4gxsy5woc-Gwz6IVny4OiQoYCcHHHmABRIYX57YNNGwEQ==" 
+              frameBorder="0" 
+              scrolling="auto" 
+              allowFullScreen 
+              style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto', maxWidth: '100%' }}
+              title="Newsletter MoonWave Records"
+            />
           </div>
         </div>
 

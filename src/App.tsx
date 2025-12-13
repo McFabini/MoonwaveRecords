@@ -7,9 +7,13 @@ import { Music } from './components/Music';
 import { DemoSubmission } from './components/DemoSubmission';
 import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
+import { LegalNotice } from './components/LegalNotice';
+import { PrivacyPolicy } from './components/PrivacyPolicy';
+import { TermsOfService } from './components/TermsOfService';
+import { CookiesPolicy } from './components/CookiesPolicy';
 import { Toaster } from './components/ui/sonner';
 
-type Section = 'home' | 'artists' | 'services' | 'music' | 'demos' | 'contact';
+type Section = 'home' | 'artists' | 'services' | 'music' | 'demos' | 'contact' | 'legal' | 'privacy' | 'terms' | 'cookies';
 
 export default function App() {
   const [currentSection, setCurrentSection] = useState<Section>('home');
@@ -33,9 +37,13 @@ export default function App() {
         {currentSection === 'music' && <Music />}
         {currentSection === 'demos' && <DemoSubmission />}
         {currentSection === 'contact' && <Contact />}
+        {currentSection === 'legal' && <LegalNotice onNavigate={handleNavigate} />}
+        {currentSection === 'privacy' && <PrivacyPolicy onNavigate={handleNavigate} />}
+        {currentSection === 'terms' && <TermsOfService onNavigate={handleNavigate} />}
+        {currentSection === 'cookies' && <CookiesPolicy onNavigate={handleNavigate} />}
       </main>
 
-      <Footer />
+      <Footer onNavigate={handleNavigate} />
       <Toaster position="bottom-right" />
     </div>
   );

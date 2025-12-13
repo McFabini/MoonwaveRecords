@@ -1,5 +1,5 @@
 import { Button } from './ui/button';
-import { Music2, Headphones, Sparkles } from 'lucide-react';
+import { Music2, Headphones, Sparkles, FileText } from 'lucide-react';
 
 interface HeroProps {
   onNavigate: (section: string) => void;
@@ -55,11 +55,11 @@ export function Hero({ onNavigate }: HeroProps) {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
             <div className="bg-card/50 backdrop-blur-sm border border-border rounded-xl p-6 space-y-3 hover:bg-card/70 transition-all">
               <div className="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center mx-auto">
-                <Music2 className="w-6 h-6 text-primary" />
+                <FileText className="w-6 h-6 text-primary" />
               </div>
-              <h3>Production Studio</h3>
+              <h3>Publishing</h3>
               <p className="text-muted-foreground text-sm">
-                Studio d'enregistrement professionnel avec ingénieurs du son experts
+                Gestion de vos droits d'auteur et maximisation de vos revenus
               </p>
             </div>
 
