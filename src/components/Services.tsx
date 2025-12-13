@@ -4,6 +4,7 @@ import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { motion } from 'framer-motion';
+import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 
 interface ServicesProps {
   onNavigate?: (section: string) => void;
@@ -127,6 +128,33 @@ const additionalServices = [
 ];
 
 export function Services({ onNavigate }: ServicesProps) {
+  // Custom Tooltip Component
+  const CustomTooltip = ({ active, payload }: any) => {
+    if (active && payload && payload.length) {
+      const data = payload[0];
+      const isArtist = data.name === 'Artiste';
+      const backgroundColor = isArtist ? '#6366f1' : '#a855f7';
+      const borderColor = isArtist ? '#818cf8' : '#c084fc';
+      
+      return (
+        <div 
+          style={{
+            backgroundColor,
+            border: `2px solid ${borderColor}`,
+            borderRadius: '12px',
+            padding: '12px 16px',
+            color: '#ffffff',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
+          }}
+        >
+          <p style={{ fontWeight: 'bold', marginBottom: '4px' }}>{data.name}</p>
+          <p style={{ fontSize: '20px', fontWeight: 'bold' }}>{data.value}%</p>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <section className="min-h-screen py-20 px-4">
       <div className="container mx-auto max-w-7xl">
@@ -314,6 +342,123 @@ export function Services({ onNavigate }: ServicesProps) {
               </div>
             </TabsContent>
           </Tabs>
+        </motion.div>
+
+        {/* Revenue Split Chart */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="mb-20"
+        >
+          <Card className="bg-gradient-to-br from-primary/10 via-card to-accent/10 border-primary/30 overflow-hidden">
+            <CardHeader className="text-center pb-2">
+              <CardTitle className="text-3xl mb-2">Répartition des Revenus</CardTitle>
+              <CardDescription className="text-base">
+                Une répartition équitable et transparente des revenus générés par vos sorties
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                {/* Pie Chart */}
+                <div className="w-full flex items-center justify-center py-8">
+                  <PieChart width={400} height={400}>
+                    <defs>
+                      <filter id="shadow" height="200%">
+                        <feDropShadow dx="0" dy="4" stdDeviation="8" floodColor="#000" floodOpacity="0.3"/>
+                      </filter>
+                      <linearGradient id="blueGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#818cf8" stopOpacity={1}/>
+                        <stop offset="100%" stopColor="#6366f1" stopOpacity={1}/>
+                      </linearGradient>
+                      <linearGradient id="purpleGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#c084fc" stopOpacity={1}/>
+                        <stop offset="100%" stopColor="#a855f7" stopOpacity={1}/>
+                      </linearGradient>
+                    </defs>
+                    <Pie
+                      data={[
+                        { name: 'Artiste', value: 80 },
+                        { name: 'MoonWave Records', value: 20 }
+                      ]}
+                      cx={200}
+                      cy={180}
+                      labelLine={false}
+                      label={({ value }) => `${value}%`}
+                      outerRadius={120}
+                      innerRadius={60}
+                      paddingAngle={5}
+                      dataKey="value"
+                      animationBegin={0}
+                      animationDuration={800}
+                      style={{ filter: 'url(#shadow)' }}
+                    >
+                      <Cell fill="url(#blueGradient)" stroke="#6366f1" strokeWidth={2} />
+                      <Cell fill="url(#purpleGradient)" stroke="#a855f7" strokeWidth={2} />
+                    </Pie>
+                    <Tooltip 
+                      contentStyle={{
+                        backgroundColor: '#1e1b4b',
+                        border: '1px solid #6366f1',
+                        borderRadius: '8px',
+                        color: '#ffffff'
+                      }}
+                      formatter={(value: number) => `${value}%`}
+                      content={<CustomTooltip />}
+                    />
+                    <Legend 
+                      verticalAlign="bottom" 
+                      height={36}
+                      iconType="circle"
+                      formatter={(value) => <span className="text-foreground">{value}</span>}
+                    />
+                  </PieChart>
+                </div>
+
+                {/* Details */}
+                <div className="space-y-6">
+                  <div className="p-6 bg-card/50 rounded-xl border border-primary/20">
+                    <div className="flex items-center gap-4 mb-3">
+                      <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
+                        <TrendingUp className="w-6 h-6 text-primary" />
+                      </div>
+                      <div>
+                        <h4 className="text-2xl text-primary">80%</h4>
+                        <p className="text-sm text-muted-foreground">Pour l'Artiste</p>
+                      </div>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Vous conservez la grande majorité de vos revenus. C'est votre musique, 
+                      vous méritez d'en profiter pleinement.
+                    </p>
+                  </div>
+
+                  <div className="p-6 bg-card/50 rounded-xl border border-accent/20">
+                    <div className="flex items-center gap-4 mb-3">
+                      <div className="w-12 h-12 rounded-full bg-accent/20 flex items-center justify-center">
+                        <Radio className="w-6 h-6 text-accent" />
+                      </div>
+                      <div>
+                        <h4 className="text-2xl text-accent">20%</h4>
+                        <p className="text-sm text-muted-foreground">Pour MoonWave Records</p>
+                      </div>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Couvre la distribution, le maintien sur les plateformes, le support technique 
+                      et les outils professionnels mis à votre disposition.
+                    </p>
+                  </div>
+
+                  <div className="p-4 bg-gradient-to-r from-primary/10 to-accent/10 rounded-lg border border-border">
+                    <p className="text-sm text-muted-foreground">
+                      💡 <span className="text-foreground">Paiements mensuels</span> - Recevez vos revenus 
+                      directement chaque mois, avec des rapports détaillés de vos performances.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </motion.div>
 
         {/* Additional Services */}
