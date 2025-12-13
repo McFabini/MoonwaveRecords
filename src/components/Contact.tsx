@@ -5,6 +5,8 @@ import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { Button } from './ui/button';
 import { toast } from 'sonner@2.0.3';
+import { motion } from 'motion/react';
+import emailjs from '@emailjs/browser';
 
 export function Contact() {
   const [formData, setFormData] = useState({
@@ -13,13 +15,44 @@ export function Contact() {
     subject: '',
     message: '',
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success('Message envoyé avec succès !', {
-      description: 'Nous vous répondrons dans les plus brefs délais.',
-    });
-    setFormData({ name: '', email: '', subject: '', message: '' });
+    setIsSubmitting(true);
+
+    try {
+      // Configuration EmailJS
+      // Remplacez ces valeurs par vos propres clés depuis https://www.emailjs.com/
+      const serviceId = 'YOUR_SERVICE_ID'; // Ex: 'service_abc123'
+      const templateId = 'YOUR_TEMPLATE_ID'; // Ex: 'template_xyz789'
+      const publicKey = 'YOUR_PUBLIC_KEY'; // Ex: 'abcdef123456'
+
+      // Paramètres du template EmailJS
+      const templateParams = {
+        from_name: formData.name,
+        from_email: formData.email,
+        subject: formData.subject,
+        message: formData.message,
+        to_email: 'contact@fabienmanuelcapelli.com',
+      };
+
+      // Envoi via EmailJS
+      await emailjs.send(serviceId, templateId, templateParams, publicKey);
+
+      toast.success('Message envoyé avec succès !', {
+        description: 'Nous vous répondrons dans les plus brefs délais.',
+      });
+      
+      setFormData({ name: '', email: '', subject: '', message: '' });
+    } catch (error) {
+      console.error('Erreur lors de l\'envoi:', error);
+      toast.error('Erreur lors de l\'envoi', {
+        description: 'Veuillez réessayer ou nous contacter directement par email.',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const socialLinks = [
@@ -33,85 +66,97 @@ export function Contact() {
     <section className="min-h-screen py-24 px-4">
       <div className="container mx-auto max-w-6xl">
         {/* Header */}
-        <div className="text-center mb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
+        >
           <h2 className="text-4xl md:text-5xl mb-4 bg-gradient-to-r from-white via-accent to-primary bg-clip-text text-transparent">
             Contactez-nous
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
             Une question sur nos services ? Un projet musical ? N&apos;hésitez pas à nous contacter
           </p>
-        </div>
+        </motion.div>
 
         <div className="grid md:grid-cols-2 gap-8">
           {/* Formulaire de contact */}
-          <Card className="p-8 bg-card border-border">
-            <h3 className="mb-6">Envoyez-nous un message</h3>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label htmlFor="name" className="block mb-2">
-                  Nom
-                </label>
-                <Input
-                  id="name"
-                  type="text"
-                  placeholder="Votre nom"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  required
-                  className="bg-input-background border-border text-foreground"
-                />
-              </div>
-              <div>
-                <label htmlFor="email" className="block mb-2">
-                  Email
-                </label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="votre@email.com"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  required
-                  className="bg-input-background border-border text-foreground"
-                />
-              </div>
-              <div>
-                <label htmlFor="subject" className="block mb-2">
-                  Sujet
-                </label>
-                <Input
-                  id="subject"
-                  type="text"
-                  placeholder="Objet de votre message"
-                  value={formData.subject}
-                  onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                  required
-                  className="bg-input-background border-border text-foreground"
-                />
-              </div>
-              <div>
-                <label htmlFor="message" className="block mb-2">
-                  Message
-                </label>
-                <Textarea
-                  id="message"
-                  placeholder="Votre message..."
-                  rows={5}
-                  value={formData.message}
-                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  required
-                  className="bg-input-background border-border text-foreground resize-none"
-                />
-              </div>
-              <Button
-                type="submit"
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground gap-2"
-              >
-                <Send className="w-4 h-4" />
-                Envoyer le message
-              </Button>
-            </form>
-          </Card>
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <Card className="p-8 bg-card border-border">
+              <h3 className="mb-6">Envoyez-nous un message</h3>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div>
+                  <label htmlFor="name" className="block mb-2">
+                    Nom
+                  </label>
+                  <Input
+                    id="name"
+                    type="text"
+                    placeholder="Votre nom"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    required
+                    className="bg-input-background border-border text-foreground"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="email" className="block mb-2">
+                    Email
+                  </label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="votre@email.com"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    required
+                    className="bg-input-background border-border text-foreground"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="subject" className="block mb-2">
+                    Sujet
+                  </label>
+                  <Input
+                    id="subject"
+                    type="text"
+                    placeholder="Objet de votre message"
+                    value={formData.subject}
+                    onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                    required
+                    className="bg-input-background border-border text-foreground"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="message" className="block mb-2">
+                    Message
+                  </label>
+                  <Textarea
+                    id="message"
+                    placeholder="Votre message..."
+                    rows={5}
+                    value={formData.message}
+                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                    required
+                    className="bg-input-background border-border text-foreground resize-none"
+                  />
+                </div>
+                <Button
+                  type="submit"
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground gap-2"
+                  disabled={isSubmitting}
+                >
+                  <Send className="w-4 h-4" />
+                  Envoyer le message
+                </Button>
+              </form>
+            </Card>
+          </motion.div>
 
           {/* Informations de contact */}
           <div className="space-y-6">

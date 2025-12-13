@@ -1,14 +1,14 @@
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import { Instagram, Youtube, Facebook, Music } from 'lucide-react';
 import { Badge } from './ui/badge';
-import mcfabiniImage from 'figma:asset/6ba62b9ed6b80384c7c1adef9bccf22d29bb25e2.png';
+import { motion } from 'framer-motion';
 
 const artists = [
   {
     id: 1,
     name: 'McFabini Beats',
     genre: 'Musique de film',
-    image: mcfabiniImage,
+    image: 'https://images.unsplash.com/photo-1729709606104-32dbcf34c189?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMHByb2R1Y2VyJTIwc3R1ZGlvJTIwaGVhZHBob25lc3xlbnwxfHx8fDE3NjU2NTA5NjJ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
     bio: 'Artiste de musique à l\'image qui explore les styles électro, 90s et rap',
     releases: 5,
     socials: {
@@ -24,20 +24,28 @@ export function Artists() {
     <section className="min-h-screen py-20 px-4">
       <div className="container mx-auto max-w-7xl">
         {/* Header */}
-        <div className="text-center mb-16 space-y-4">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16 space-y-4"
+        >
           <h1 className="text-4xl md:text-6xl tracking-wider bg-gradient-to-r from-white via-accent to-primary bg-clip-text text-transparent">
             Notre Roster
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Découvrez les artistes talentueux qui font partie de la famille MoonWave Records
           </p>
-        </div>
+        </motion.div>
 
         {/* Artists Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {artists.map((artist) => (
-            <div
+          {artists.map((artist, index) => (
+            <motion.div
               key={artist.id}
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 + index * 0.1 }}
               className="group bg-card border border-border rounded-2xl overflow-hidden hover:border-primary/50 transition-all duration-300"
             >
               {/* Image */}
@@ -92,17 +100,22 @@ export function Artists() {
                   </a>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
 
         {/* CTA */}
-        <div className="mt-16 text-center p-8 bg-gradient-to-r from-primary/10 to-accent/10 rounded-2xl border border-border">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="mt-16 text-center p-8 bg-gradient-to-r from-primary/10 to-accent/10 rounded-2xl border border-border"
+        >
           <h3 className="text-2xl mb-3">Vous voulez rejoindre notre roster ?</h3>
           <p className="text-muted-foreground mb-6">
             Soumettez votre démo et notre équipe A&R l'écoutera attentivement
           </p>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

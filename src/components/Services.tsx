@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
+import { motion } from 'framer-motion';
 
 const releasePackages = [
   {
@@ -127,184 +128,195 @@ export function Services() {
     <section className="min-h-screen py-20 px-4">
       <div className="container mx-auto max-w-7xl">
         {/* Header */}
-        <div className="text-center mb-16 space-y-4">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16 space-y-4"
+        >
           <h1 className="text-4xl md:text-6xl tracking-wider bg-gradient-to-r from-white via-accent to-primary bg-clip-text text-transparent">
             Nos Services
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Des packages tout-inclus pour sortir votre musique professionnellement
           </p>
-        </div>
+        </motion.div>
 
         {/* Tabs for Normal / Student Pricing */}
-        <Tabs defaultValue="normal" className="mb-16">
-          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-12">
-            <TabsTrigger value="normal">Tarifs Normaux</TabsTrigger>
-            <TabsTrigger value="student" className="gap-2">
-              <GraduationCap className="w-4 h-4" />
-              Tarifs Étudiants
-            </TabsTrigger>
-          </TabsList>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          <Tabs defaultValue="normal" className="mb-16">
+            <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-12">
+              <TabsTrigger value="normal">Tarifs Normaux</TabsTrigger>
+              <TabsTrigger value="student" className="gap-2">
+                <GraduationCap className="w-4 h-4" />
+                Tarifs Étudiants
+              </TabsTrigger>
+            </TabsList>
 
-          <TabsContent value="normal" className="space-y-8">
-            {/* Release Packages - Normal */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {releasePackages.map((pkg) => {
-                const IconComponent = pkg.icon;
-                return (
-                  <Card
-                    key={pkg.id}
-                    className={`relative bg-card border-border hover:border-primary/50 transition-all ${
-                      pkg.popular ? 'ring-2 ring-primary shadow-lg shadow-primary/20' : ''
-                    }`}
-                  >
-                    {pkg.popular && (
-                      <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                        <Badge className="bg-gradient-to-r from-primary to-accent text-white px-6 py-1">
-                          Le plus populaire
-                        </Badge>
-                      </div>
-                    )}
-                    
-                    <CardHeader>
-                      <div className={`w-16 h-16 bg-gradient-to-br ${pkg.color} rounded-xl flex items-center justify-center mb-4 mx-auto`}>
-                        <IconComponent className="w-8 h-8 text-primary" />
-                      </div>
-                      <CardTitle className="text-2xl text-center">{pkg.title}</CardTitle>
-                      <CardDescription className="text-center text-sm">
-                        {pkg.subtitle}
-                      </CardDescription>
-                      <p className="text-sm text-muted-foreground text-center mt-2">
-                        {pkg.description}
-                      </p>
-                    </CardHeader>
+            <TabsContent value="normal" className="space-y-8">
+              {/* Release Packages - Normal */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {releasePackages.map((pkg) => {
+                  const IconComponent = pkg.icon;
+                  return (
+                    <Card
+                      key={pkg.id}
+                      className={`relative bg-card border-border hover:border-primary/50 transition-all ${
+                        pkg.popular ? 'ring-2 ring-primary shadow-lg shadow-primary/20' : ''
+                      }`}
+                    >
+                      {pkg.popular && (
+                        <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                          <Badge className="bg-gradient-to-r from-primary to-accent text-white px-6 py-1">
+                            Le plus populaire
+                          </Badge>
+                        </div>
+                      )}
+                      
+                      <CardHeader>
+                        <div className={`w-16 h-16 bg-gradient-to-br ${pkg.color} rounded-xl flex items-center justify-center mb-4 mx-auto`}>
+                          <IconComponent className="w-8 h-8 text-primary" />
+                        </div>
+                        <CardTitle className="text-2xl text-center">{pkg.title}</CardTitle>
+                        <CardDescription className="text-center text-sm">
+                          {pkg.subtitle}
+                        </CardDescription>
+                        <p className="text-sm text-muted-foreground text-center mt-2">
+                          {pkg.description}
+                        </p>
+                      </CardHeader>
 
-                    <CardContent className="space-y-6">
-                      {/* Price */}
-                      <div className="text-center py-4 border-y border-border">
-                        <div className="text-4xl mb-1">{pkg.priceNormal}</div>
-                        <div className="text-sm text-muted-foreground">Paiement unique</div>
-                      </div>
+                      <CardContent className="space-y-6">
+                        {/* Price */}
+                        <div className="text-center py-4 border-y border-border">
+                          <div className="text-4xl mb-1">{pkg.priceNormal}</div>
+                          <div className="text-sm text-muted-foreground">Paiement unique</div>
+                        </div>
 
-                      {/* Features */}
-                      <div className="space-y-3">
-                        {pkg.features.map((feature, idx) => (
-                          <div key={idx} className="flex items-start gap-3">
-                            <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                            <span className="text-sm text-muted-foreground">{feature}</span>
-                          </div>
-                        ))}
-                      </div>
+                        {/* Features */}
+                        <div className="space-y-3">
+                          {pkg.features.map((feature, idx) => (
+                            <div key={idx} className="flex items-start gap-3">
+                              <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                              <span className="text-sm text-muted-foreground">{feature}</span>
+                            </div>
+                          ))}
+                        </div>
 
-                      {/* CTA */}
-                      <Button 
-                        className={`w-full ${
-                          pkg.popular 
-                            ? 'bg-gradient-to-r from-primary to-accent hover:opacity-90' 
-                            : 'bg-primary hover:bg-primary/90'
-                        }`}
-                      >
-                        Choisir ce package
-                      </Button>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
-          </TabsContent>
+                        {/* CTA */}
+                        <Button 
+                          className={`w-full ${
+                            pkg.popular 
+                              ? 'bg-gradient-to-r from-primary to-accent hover:opacity-90' 
+                              : 'bg-primary hover:bg-primary/90'
+                          }`}
+                        >
+                          Choisir ce package
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            </TabsContent>
 
-          <TabsContent value="student" className="space-y-8">
-            {/* Release Packages - Student */}
-            <div className="bg-gradient-to-r from-primary/10 to-accent/10 rounded-2xl p-6 mb-8 border border-primary/30">
-              <div className="flex items-start gap-4">
-                <GraduationCap className="w-8 h-8 text-primary flex-shrink-0" />
-                <div>
-                  <h3 className="text-xl mb-2">Tarifs Étudiants - 50% de réduction</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Vous êtes étudiant(e) en école de musique, conservatoire ou université ? 
-                    Bénéficiez de 50% de réduction sur tous nos packages. 
-                    <span className="text-primary"> Carte étudiant à présenter.</span>
-                  </p>
+            <TabsContent value="student" className="space-y-8">
+              {/* Release Packages - Student */}
+              <div className="bg-gradient-to-r from-primary/10 to-accent/10 rounded-2xl p-6 mb-8 border border-primary/30">
+                <div className="flex items-start gap-4">
+                  <GraduationCap className="w-8 h-8 text-primary flex-shrink-0" />
+                  <div>
+                    <h3 className="text-xl mb-2">Tarifs Étudiants - 50% de réduction</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Vous êtes étudiant(e) en école de musique, conservatoire ou université ? 
+                      Bénéficiez de 50% de réduction sur tous nos packages. 
+                      <span className="text-primary"> Carte étudiant à présenter.</span>
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {releasePackages.map((pkg) => {
-                const IconComponent = pkg.icon;
-                return (
-                  <Card
-                    key={pkg.id}
-                    className={`relative bg-card border-border hover:border-primary/50 transition-all ${
-                      pkg.popular ? 'ring-2 ring-primary shadow-lg shadow-primary/20' : ''
-                    }`}
-                  >
-                    {pkg.popular && (
-                      <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                        <Badge className="bg-gradient-to-r from-primary to-accent text-white px-6 py-1">
-                          Le plus populaire
-                        </Badge>
-                      </div>
-                    )}
-                    
-                    <CardHeader>
-                      <div className={`w-16 h-16 bg-gradient-to-br ${pkg.color} rounded-xl flex items-center justify-center mb-4 mx-auto`}>
-                        <IconComponent className="w-8 h-8 text-primary" />
-                      </div>
-                      <CardTitle className="text-2xl text-center">{pkg.title}</CardTitle>
-                      <CardDescription className="text-center text-sm">
-                        {pkg.subtitle}
-                      </CardDescription>
-                      <p className="text-sm text-muted-foreground text-center mt-2">
-                        {pkg.description}
-                      </p>
-                    </CardHeader>
-
-                    <CardContent className="space-y-6">
-                      {/* Price */}
-                      <div className="text-center py-4 border-y border-border">
-                        <div className="flex items-center justify-center gap-3 mb-1">
-                          <span className="text-2xl text-muted-foreground line-through">
-                            {pkg.priceNormal}
-                          </span>
-                          <div className="flex items-center gap-1">
-                            <div className="text-4xl text-primary">{pkg.priceStudent}</div>
-                            <span className="text-lg text-primary">{pkg.priceType}</span>
-                          </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {releasePackages.map((pkg) => {
+                  const IconComponent = pkg.icon;
+                  return (
+                    <Card
+                      key={pkg.id}
+                      className={`relative bg-card border-border hover:border-primary/50 transition-all ${
+                        pkg.popular ? 'ring-2 ring-primary shadow-lg shadow-primary/20' : ''
+                      }`}
+                    >
+                      {pkg.popular && (
+                        <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                          <Badge className="bg-gradient-to-r from-primary to-accent text-white px-6 py-1">
+                            Le plus populaire
+                          </Badge>
                         </div>
-                        <Badge variant="outline" className="border-primary text-primary mt-2">
-                          -50% Étudiant
-                        </Badge>
-                        <div className="text-sm text-muted-foreground mt-2">Paiement unique</div>
-                      </div>
+                      )}
+                      
+                      <CardHeader>
+                        <div className={`w-16 h-16 bg-gradient-to-br ${pkg.color} rounded-xl flex items-center justify-center mb-4 mx-auto`}>
+                          <IconComponent className="w-8 h-8 text-primary" />
+                        </div>
+                        <CardTitle className="text-2xl text-center">{pkg.title}</CardTitle>
+                        <CardDescription className="text-center text-sm">
+                          {pkg.subtitle}
+                        </CardDescription>
+                        <p className="text-sm text-muted-foreground text-center mt-2">
+                          {pkg.description}
+                        </p>
+                      </CardHeader>
 
-                      {/* Features */}
-                      <div className="space-y-3">
-                        {pkg.features.map((feature, idx) => (
-                          <div key={idx} className="flex items-start gap-3">
-                            <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                            <span className="text-sm text-muted-foreground">{feature}</span>
+                      <CardContent className="space-y-6">
+                        {/* Price */}
+                        <div className="text-center py-4 border-y border-border">
+                          <div className="flex items-center justify-center gap-3 mb-1">
+                            <span className="text-2xl text-muted-foreground line-through">
+                              {pkg.priceNormal}
+                            </span>
+                            <div className="flex items-center gap-1">
+                              <div className="text-4xl text-primary">{pkg.priceStudent}</div>
+                              <span className="text-lg text-primary">{pkg.priceType}</span>
+                            </div>
                           </div>
-                        ))}
-                      </div>
+                          <Badge variant="outline" className="border-primary text-primary mt-2">
+                            -50% Étudiant
+                          </Badge>
+                          <div className="text-sm text-muted-foreground mt-2">Paiement unique</div>
+                        </div>
 
-                      {/* CTA */}
-                      <Button 
-                        className={`w-full ${
-                          pkg.popular 
-                            ? 'bg-gradient-to-r from-primary to-accent hover:opacity-90' 
-                            : 'bg-primary hover:bg-primary/90'
-                        }`}
-                      >
-                        Choisir ce package
-                      </Button>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
-          </TabsContent>
-        </Tabs>
+                        {/* Features */}
+                        <div className="space-y-3">
+                          {pkg.features.map((feature, idx) => (
+                            <div key={idx} className="flex items-start gap-3">
+                              <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                              <span className="text-sm text-muted-foreground">{feature}</span>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* CTA */}
+                        <Button 
+                          className={`w-full ${
+                            pkg.popular 
+                              ? 'bg-gradient-to-r from-primary to-accent hover:opacity-90' 
+                              : 'bg-primary hover:bg-primary/90'
+                          }`}
+                        >
+                          Choisir ce package
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            </TabsContent>
+          </Tabs>
+        </motion.div>
 
         {/* Additional Services */}
         <div className="mt-20">

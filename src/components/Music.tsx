@@ -3,6 +3,7 @@ import { Play, Pause, Music2, Disc, Album } from 'lucide-react';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
+import { motion } from 'framer-motion';
 
 interface Album {
   id: number;
@@ -50,17 +51,27 @@ export function Music() {
     <section className="min-h-screen py-24 px-4">
       <div className="container mx-auto">
         {/* Header */}
-        <div className="text-center mb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
+        >
           <h2 className="text-4xl md:text-5xl mb-4 bg-gradient-to-r from-white via-accent to-primary bg-clip-text text-transparent">
             Nos Releases
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
             Découvrez les dernières sorties de nos artistes sur MoonWave Records
           </p>
-        </div>
+        </motion.div>
 
         {/* Singles */}
-        <div className="mb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="mb-16"
+        >
           <div className="flex items-center gap-2 mb-8">
             <Music2 className="w-6 h-6 text-primary" />
             <h3 className="text-2xl">Singles</h3>
@@ -99,10 +110,15 @@ export function Music() {
               </Card>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* EPs */}
-        <div className="mb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="mb-16"
+        >
           <div className="flex items-center gap-2 mb-8">
             <Disc className="w-6 h-6 text-primary" />
             <h3 className="text-2xl">EPs</h3>
@@ -144,10 +160,15 @@ export function Music() {
               </Card>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* Albums */}
-        <div className="mb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+          className="mb-16"
+        >
           <div className="flex items-center gap-2 mb-8">
             <Album className="w-6 h-6 text-primary" />
             <h3 className="text-2xl">Albums</h3>
@@ -186,7 +207,7 @@ export function Music() {
               </Card>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* Lecteur audio (interface uniquement) */}
         {playingAlbum && (

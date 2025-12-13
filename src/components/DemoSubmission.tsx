@@ -7,6 +7,8 @@ import { Textarea } from './ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Card } from './ui/card';
 import { toast } from 'sonner@2.0.3';
+import { motion } from 'motion/react';
+import emailjs from '@emailjs/browser';
 
 export function DemoSubmission() {
   const [formData, setFormData] = useState({
@@ -14,6 +16,9 @@ export function DemoSubmission() {
     email: '',
     phone: '',
     genre: '',
+    customGenre: '',
+    package: '',
+    extraMinutes: '',
     socialLinks: '',
     description: '',
   });
@@ -37,42 +42,94 @@ export function DemoSubmission() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulation de l'envoi
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    try {
+      // Configuration EmailJS
+      // Remplacez ces valeurs par vos propres clés depuis https://www.emailjs.com/
+      const serviceId = 'YOUR_SERVICE_ID'; // Ex: 'service_abc123'
+      const templateId = 'YOUR_TEMPLATE_ID_DEMO'; // Ex: 'template_demo_xyz789'
+      const publicKey = 'YOUR_PUBLIC_KEY'; // Ex: 'abcdef123456'
 
-    toast.success('Démo envoyée avec succès!', {
-      description: 'Notre équipe A&R l\'écoutera dans les prochains jours.',
-    });
+      // Calcul du coût
+      let estimatedCost = 0;
+      if (formData.package === 'single') {
+        estimatedCost = 30 + (parseInt(formData.extraMinutes) || 0) * 10;
+      } else if (formData.package === 'ep') {
+        estimatedCost = 60 + (parseInt(formData.extraMinutes) || 0) * 15;
+      } else if (formData.package === 'album') {
+        estimatedCost = 120 + (parseInt(formData.extraMinutes) || 0) * 10;
+      }
 
-    // Réinitialiser le formulaire
-    setFormData({
-      artistName: '',
-      email: '',
-      phone: '',
-      genre: '',
-      socialLinks: '',
-      description: '',
-    });
-    setFile(null);
-    setIsSubmitting(false);
+      // Paramètres du template EmailJS pour la démo
+      const templateParams = {
+        artist_name: formData.artistName,
+        from_email: formData.email,
+        phone: formData.phone,
+        genre: formData.genre === 'autre' ? formData.customGenre : formData.genre,
+        package: formData.package,
+        extra_info: formData.extraMinutes,
+        social_links: formData.socialLinks,
+        description: formData.description,
+        estimated_cost: estimatedCost ? `${estimatedCost}€` : 'Non calculé',
+        file_name: file ? file.name : 'Aucun fichier',
+        to_email: 'contact@fabienmanuelcapelli.com',
+      };
+
+      // Envoi via EmailJS
+      await emailjs.send(serviceId, templateId, templateParams, publicKey);
+
+      toast.success('Démo envoyée avec succès!', {
+        description: 'Notre équipe A&R l\'écoutera dans les prochains jours.',
+      });
+
+      // Réinitialiser le formulaire
+      setFormData({
+        artistName: '',
+        email: '',
+        phone: '',
+        genre: '',
+        customGenre: '',
+        package: '',
+        extraMinutes: '',
+        socialLinks: '',
+        description: '',
+      });
+      setFile(null);
+    } catch (error) {
+      console.error('Erreur lors de l\'envoi:', error);
+      toast.error('Erreur lors de l\'envoi', {
+        description: 'Veuillez réessayer ou nous contacter directement par email.',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <section className="min-h-screen py-20 px-4">
       <div className="container mx-auto max-w-5xl">
         {/* Header */}
-        <div className="text-center mb-16 space-y-4">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16 space-y-4"
+        >
           <h1 className="text-4xl md:text-6xl tracking-wider bg-gradient-to-r from-white via-accent to-primary bg-clip-text text-transparent">
             Soumettre une Démo
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Partagez votre musique avec notre équipe A&R
           </p>
-        </div>
+        </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Form */}
-          <div className="lg:col-span-2">
+          <motion.div 
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="lg:col-span-2"
+          >
             <Card className="bg-card border-border p-8">
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Artist Name */}
@@ -144,6 +201,66 @@ export function DemoSubmission() {
                     </SelectContent>
                   </Select>
                 </div>
+
+                {/* Custom Genre */}
+                {formData.genre === 'autre' && (
+                  <div className="space-y-2">
+                    <Label htmlFor="customGenre">Genre musical spécifique</Label>
+                    <Input
+                      id="customGenre"
+                      name="customGenre"
+                      value={formData.customGenre}
+                      onChange={handleInputChange}
+                      placeholder="Décrivez votre genre musical spécifique"
+                      className="bg-input-background border-border"
+                    />
+                  </div>
+                )}
+
+                {/* Package */}
+                <div className="space-y-2">
+                  <Label htmlFor="package">Package souhaité *</Label>
+                  <Select
+                    value={formData.package}
+                    onValueChange={(value) =>
+                      setFormData((prev) => ({ ...prev, package: value }))
+                    }
+                  >
+                    <SelectTrigger className="bg-input-background border-border">
+                      <SelectValue placeholder="Sélectionnez un package" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="single">Single - 30€ (base 3min)</SelectItem>
+                      <SelectItem value="ep">EP - 60€ (base 3 pistes)</SelectItem>
+                      <SelectItem value="album">Album - 120€ (base 10 pistes)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Extra Minutes/Tracks */}
+                {formData.package && (
+                  <div className="space-y-2">
+                    <Label htmlFor="extraMinutes">
+                      {formData.package === 'single' && 'Minutes supplémentaires (+10€/min)'}
+                      {formData.package === 'ep' && 'Pistes supplémentaires (+15€/piste)'}
+                      {formData.package === 'album' && 'Pistes supplémentaires (+10€/piste)'}
+                    </Label>
+                    <Input
+                      id="extraMinutes"
+                      name="extraMinutes"
+                      type="number"
+                      min="0"
+                      value={formData.extraMinutes}
+                      onChange={handleInputChange}
+                      placeholder={
+                        formData.package === 'single' 
+                          ? 'Nombre de minutes supplémentaires' 
+                          : 'Nombre de pistes supplémentaires'
+                      }
+                      className="bg-input-background border-border"
+                    />
+                  </div>
+                )}
 
                 {/* Social Links */}
                 <div className="space-y-2">
@@ -220,7 +337,7 @@ export function DemoSubmission() {
                 </Button>
               </form>
             </Card>
-          </div>
+          </motion.div>
 
           {/* Sidebar Info */}
           <div className="space-y-6">

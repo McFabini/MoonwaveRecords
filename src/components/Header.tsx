@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Menu, X, Music2 } from 'lucide-react';
+import { Music, Menu, X } from 'lucide-react';
 import { Button } from './ui/button';
+import { motion } from 'framer-motion';
 
 interface HeaderProps {
   onNavigate: (section: string) => void;
@@ -8,7 +9,7 @@ interface HeaderProps {
 }
 
 export function Header({ onNavigate, currentSection }: HeaderProps) {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navItems = [
     { id: 'home', label: 'Accueil' },
@@ -21,11 +22,16 @@ export function Header({ onNavigate, currentSection }: HeaderProps) {
 
   const handleNavClick = (section: string) => {
     onNavigate(section);
-    setMobileMenuOpen(false);
+    setIsMenuOpen(false);
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border">
+    <motion.header
+      initial={{ y: -100, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.6, delay: 0.2 }}
+      className="fixed top-0 left-0 right-0 z-50 bg-card/80 backdrop-blur-lg border-b border-border"
+    >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -34,7 +40,7 @@ export function Header({ onNavigate, currentSection }: HeaderProps) {
             className="flex items-center gap-2 hover:opacity-80 transition-opacity"
           >
             <div className="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center animate-glow">
-              <Music2 className="w-6 h-6 text-white" />
+              <Music className="w-6 h-6 text-white" />
             </div>
             <span className="text-xl tracking-wider">MoonWave Records</span>
           </button>
@@ -61,14 +67,14 @@ export function Header({ onNavigate, currentSection }: HeaderProps) {
             variant="ghost"
             size="icon"
             className="md:hidden"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
-            {mobileMenuOpen ? <X /> : <Menu />}
+            {isMenuOpen ? <X /> : <Menu />}
           </Button>
         </div>
 
         {/* Navigation Mobile */}
-        {mobileMenuOpen && (
+        {isMenuOpen && (
           <nav className="md:hidden pb-4 space-y-2">
             {navItems.map((item) => (
               <button
@@ -86,6 +92,6 @@ export function Header({ onNavigate, currentSection }: HeaderProps) {
           </nav>
         )}
       </div>
-    </header>
+    </motion.header>
   );
 }
