@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link2, Music2, CheckCircle, AlertCircle } from 'lucide-react';
+import { Upload, Music2, CheckCircle, AlertCircle } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
@@ -18,10 +18,10 @@ export function DemoSubmission() {
     customGenre: '',
     package: '',
     extraMinutes: '',
-    demoLink: '',
     socialLinks: '',
     description: '',
   });
+  const [file, setFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (
@@ -29,6 +29,23 @@ export function DemoSubmission() {
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const selectedFile = e.target.files[0];
+      // Vérifier la taille (50 MB max)
+      if (selectedFile.size > 50 * 1024 * 1024) {
+        toast.error('Fichier trop volumineux', {
+          description: 'La taille maximale est de 50 MB.',
+        });
+        return;
+      }
+      setFile(selectedFile);
+      toast.success('Fichier chargé', {
+        description: `${selectedFile.name} (${(selectedFile.size / 1024 / 1024).toFixed(2)} MB)`,
+      });
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -61,7 +78,15 @@ export function DemoSubmission() {
         return;
       }
 
-      // Calcul du coût estimé
+      if (!file) {
+        toast.error('Fichier audio requis', {
+          description: 'Veuillez télécharger votre démo.',
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Calcul du coût estim
       let estimatedCost = 0;
       if (formData.package === 'single') {
         estimatedCost = 30 + (parseInt(formData.extraMinutes) || 0) * 10;
@@ -71,25 +96,24 @@ export function DemoSubmission() {
         estimatedCost = 120 + (parseInt(formData.extraMinutes) || 0) * 10;
       }
 
+      // Créer un FormData pour envoyer le fichier
+      const formDataToSend = new FormData();
+      formDataToSend.append('demoFile', file);
+      formDataToSend.append('artistName', formData.artistName);
+      formDataToSend.append('email', formData.email);
+      formDataToSend.append('phone', formData.phone);
+      formDataToSend.append('genre', formData.genre);
+      formDataToSend.append('customGenre', formData.customGenre);
+      formDataToSend.append('package', formData.package);
+      formDataToSend.append('extraMinutes', formData.extraMinutes);
+      formDataToSend.append('socialLinks', formData.socialLinks);
+      formDataToSend.append('description', formData.description);
+      formDataToSend.append('estimatedCost', `${estimatedCost}€`);
+
       // Envoi vers le backend maison
       const response = await fetch('http://localhost:3001/api/demo', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          artistName: formData.artistName,
-          email: formData.email,
-          phone: formData.phone,
-          genre: formData.genre,
-          customGenre: formData.customGenre,
-          package: formData.package,
-          extraMinutes: formData.extraMinutes,
-          demoLink: formData.demoLink,
-          socialLinks: formData.socialLinks,
-          description: formData.description,
-          estimatedCost: `${estimatedCost}€`,
-        }),
+        body: formDataToSend,
       });
 
       const data = await response.json();
@@ -108,10 +132,16 @@ export function DemoSubmission() {
           customGenre: '',
           package: '',
           extraMinutes: '',
-          demoLink: '',
           socialLinks: '',
           description: '',
         });
+        setFile(null);
+        
+        // Réinitialiser l'input file
+        const fileInput = document.getElementById('file') as HTMLInputElement;
+        if (fileInput) {
+          fileInput.value = '';
+        }
       } else {
         throw new Error(data.message || 'Erreur lors de l\'envoi');
       }
@@ -283,19 +313,6 @@ export function DemoSubmission() {
                   </div>
                 )}
 
-                {/* Demo Link */}
-                <div className="space-y-2">
-                  <Label htmlFor="demoLink">Lien vers votre démo</Label>
-                  <Input
-                    id="demoLink"
-                    name="demoLink"
-                    value={formData.demoLink}
-                    onChange={handleInputChange}
-                    placeholder="https://soundcloud.com/your-demo"
-                    className="bg-input-background border-border"
-                  />
-                </div>
-
                 {/* Social Links */}
                 <div className="space-y-2">
                   <Label htmlFor="socialLinks">Liens réseaux sociaux / Streaming</Label>
@@ -325,6 +342,63 @@ export function DemoSubmission() {
                   />
                 </div>
 
+                {/* File Upload */}
+                <div className="space-y-2">
+                  <Label htmlFor="file">Télécharger votre démo * (50 MB max)</Label>
+                  <div 
+                    className="relative cursor-pointer group"
+                    onClick={() => document.getElementById('file')?.click()}
+                  >
+                    <div className={`
+                      border-2 border-dashed rounded-lg p-8 text-center transition-all
+                      ${file 
+                        ? 'border-primary bg-primary/5' 
+                        : 'border-border bg-input-background hover:border-primary hover:bg-primary/5'
+                      }
+                    `}>
+                      <Upload className={`
+                        w-12 h-12 mx-auto mb-4 transition-transform group-hover:scale-110
+                        ${file ? 'text-primary' : 'text-muted-foreground'}
+                      `} />
+                      
+                      {file ? (
+                        <div className="space-y-2">
+                          <p className="text-primary">✓ Fichier chargé</p>
+                          <p className="text-sm">{file.name}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {(file.size / 1024 / 1024).toFixed(2)} MB
+                          </p>
+                          <p className="text-xs text-muted-foreground mt-3">
+                            Cliquez pour changer de fichier
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="space-y-2">
+                          <p className="text-foreground">
+                            Cliquez pour sélectionner votre démo
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            MP3, WAV, FLAC, AAC, OGG, M4A
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            Maximum 50 MB
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                    
+                    <Input
+                      id="file"
+                      name="file"
+                      type="file"
+                      accept="audio/*,.mp3,.wav,.flac,.aac,.ogg,.m4a"
+                      onChange={handleFileChange}
+                      className="hidden"
+                      required
+                    />
+                  </div>
+                </div>
+
                 {/* Submit Button */}
                 <Button
                   type="submit"
@@ -339,39 +413,11 @@ export function DemoSubmission() {
 
           {/* Sidebar Info */}
           <div className="space-y-6">
-            {/* Demo Link Info */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-            >
-              <Card className="bg-gradient-to-br from-primary/20 to-accent/20 border-primary/30 p-6">
-                <div className="flex items-start gap-3 mb-4">
-                  <Link2 className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
-                  <div>
-                    <h3 className="mb-2">Comment partager votre démo</h3>
-                    <p className="text-sm text-muted-foreground mb-3">
-                      Uploadez votre démo sur l'une de ces plateformes :
-                    </p>
-                    <ul className="space-y-2 text-sm text-muted-foreground">
-                      <li>• <strong>SoundCloud</strong> (privé ou public)</li>
-                      <li>• <strong>Google Drive</strong> / Dropbox</li>
-                      <li>• <strong>WeTransfer</strong> (lien direct)</li>
-                      <li>• <strong>YouTube</strong> (unlisted)</li>
-                    </ul>
-                    <p className="text-xs text-muted-foreground mt-3">
-                      Assurez-vous que le lien est accessible
-                    </p>
-                  </div>
-                </div>
-              </Card>
-            </motion.div>
-
             {/* Guidelines */}
             <motion.div
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
             >
               <Card className="bg-card border-border p-6">
                 <div className="flex items-start gap-3 mb-4">
@@ -394,7 +440,7 @@ export function DemoSubmission() {
             <motion.div
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
             >
               <Card className="bg-card border-border p-6">
                 <div className="flex items-start gap-3 mb-4">
@@ -416,7 +462,7 @@ export function DemoSubmission() {
             <motion.div
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
             >
               <Card className="bg-destructive/10 border-destructive/30 p-6">
                 <div className="flex items-start gap-3">
