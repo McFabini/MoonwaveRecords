@@ -6,7 +6,6 @@ import { Textarea } from './ui/textarea';
 import { Button } from './ui/button';
 import { toast } from 'sonner@2.0.3';
 import { motion } from 'motion/react';
-import emailjs from '@emailjs/browser';
 
 export function Contact() {
   const [formData, setFormData] = useState({
@@ -22,33 +21,39 @@ export function Contact() {
     setIsSubmitting(true);
 
     try {
-      // Configuration EmailJS
-      // Remplacez ces valeurs par vos propres clés depuis https://www.emailjs.com/
-      const serviceId = 'YOUR_SERVICE_ID'; // Ex: 'service_abc123'
-      const templateId = 'YOUR_TEMPLATE_ID'; // Ex: 'template_xyz789'
-      const publicKey = 'YOUR_PUBLIC_KEY'; // Ex: 'abcdef123456'
+      // Validation des champs
+      if (!formData.name || !formData.email || !formData.message) {
+        toast.error('Champs requis manquants', {
+          description: 'Veuillez remplir tous les champs obligatoires.',
+        });
+        setIsSubmitting(false);
+        return;
+      }
 
-      // Paramètres du template EmailJS
-      const templateParams = {
-        from_name: formData.name,
-        from_email: formData.email,
-        subject: formData.subject,
-        message: formData.message,
-        to_email: 'contact@fabienmanuelcapelli.com',
-      };
-
-      // Envoi via EmailJS
-      await emailjs.send(serviceId, templateId, templateParams, publicKey);
-
-      toast.success('Message envoyé avec succès !', {
-        description: 'Nous vous répondrons dans les plus brefs délais.',
+      // Envoi vers le backend maison
+      const response = await fetch('http://localhost:3001/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
       });
-      
-      setFormData({ name: '', email: '', subject: '', message: '' });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        toast.success('Message envoyé avec succès !', {
+          description: 'Nous vous répondrons dans les plus brefs délais.',
+        });
+        
+        setFormData({ name: '', email: '', subject: '', message: '' });
+      } else {
+        throw new Error(data.message || 'Erreur lors de l\'envoi');
+      }
     } catch (error) {
       console.error('Erreur lors de l\'envoi:', error);
       toast.error('Erreur lors de l\'envoi', {
-        description: 'Veuillez réessayer ou nous contacter directement par email.',
+        description: error instanceof Error ? error.message : 'Veuillez vérifier que le serveur est lancé (npm run server)',
       });
     } finally {
       setIsSubmitting(false);
