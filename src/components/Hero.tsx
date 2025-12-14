@@ -51,8 +51,12 @@ export function Hero({ onNavigate }: HeroProps) {
             }}
             className="flex justify-center"
           >
-            <div className="w-24 h-24 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center animate-glow">
-              <Music2 className="w-12 h-12 text-white" />
+            <div className="w-24 h-24 rounded-full overflow-hidden flex items-center justify-center animate-glow">
+              <img
+                src="https://i.ibb.co/t6CZpKR/image-circulaire-recadree-1.png"
+                alt="MoonWave Records Logo"
+                className="w-full h-full object-cover"
+              />
             </div>
           </motion.div>
 

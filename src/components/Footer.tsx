@@ -1,4 +1,4 @@
-import { Music, Heart } from 'lucide-react';
+import { Heart } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useInView } from 'motion/react';
 import { useRef } from 'react';
@@ -23,7 +23,13 @@ export function Footer({ onNavigate }: FooterProps) {
             transition={{ duration: 0.5, delay: 0.1 }}
           >
             <div className="flex items-center gap-2 mb-4">
-              <Music className="w-6 h-6 text-primary" />
+              <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center">
+                <img
+                  src="https://i.ibb.co/t6CZpKR/image-circulaire-recadree-1.png"
+                  alt="MoonWave Records Logo"
+                  className="w-full h-full object-cover"
+                />
+              </div>
               <span className="font-bold">MoonWave Records</span>
             </div>
             <p className="text-sm text-foreground/60">

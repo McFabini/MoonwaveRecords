@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Music, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { Button } from './ui/button';
 import { motion } from 'framer-motion';
 
@@ -39,8 +39,12 @@ export function Header({ onNavigate, currentSection }: HeaderProps) {
             onClick={() => handleNavClick('home')}
             className="flex items-center gap-2 hover:opacity-80 transition-opacity"
           >
-            <div className="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center animate-glow">
-              <Music className="w-6 h-6 text-white" />
+            <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center animate-glow">
+              <img
+                src="https://i.ibb.co/t6CZpKR/image-circulaire-recadree-1.png"
+                alt="MoonWave Records Logo"
+                className="w-full h-full object-cover"
+              />
             </div>
             <span className="text-xl tracking-wider">MoonWave Records</span>
           </button>

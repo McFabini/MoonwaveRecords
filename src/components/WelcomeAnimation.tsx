@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
-import { Music2 } from 'lucide-react';
 
 interface WelcomeAnimationProps {
   onComplete: () => void;
@@ -66,9 +65,13 @@ export function WelcomeAnimation({ onComplete }: WelcomeAnimationProps) {
                 initial={{ rotate: 0 }}
                 animate={{ rotate: 360 }}
                 transition={{ duration: 2, ease: 'easeInOut' }}
-                className="w-32 h-32 mx-auto bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center"
+                className="w-32 h-32 mx-auto rounded-full overflow-hidden flex items-center justify-center animate-glow"
               >
-                <Music2 className="w-16 h-16 text-white" />
+                <img
+                  src="https://i.ibb.co/t6CZpKR/image-circulaire-recadree-1.png"
+                  alt="MoonWave Records Logo"
+                  className="w-full h-full object-cover"
+                />
               </motion.div>
               <motion.h1
                 initial={{ opacity: 0, y: 20 }}
@@ -101,8 +104,12 @@ export function WelcomeAnimation({ onComplete }: WelcomeAnimationProps) {
                 className="w-40 h-40 mx-auto relative"
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-primary to-accent rounded-full animate-pulse"></div>
-                <div className="absolute inset-2 bg-background rounded-full flex items-center justify-center">
-                  <Music2 className="w-20 h-20 text-primary" />
+                <div className="absolute inset-2 bg-background rounded-full overflow-hidden flex items-center justify-center">
+                  <img
+                    src="https://i.ibb.co/t6CZpKR/image-circulaire-recadree-1.png"
+                    alt="MoonWave Records Logo"
+                    className="w-full h-full object-cover rounded-full"
+                  />
                 </div>
               </motion.div>
               <motion.div
@@ -139,9 +146,13 @@ export function WelcomeAnimation({ onComplete }: WelcomeAnimationProps) {
                 initial={{ y: 0 }}
                 animate={{ y: -20 }}
                 transition={{ duration: 0.6 }}
-                className="w-24 h-24 mx-auto bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center"
+                className="w-24 h-24 mx-auto rounded-full overflow-hidden flex items-center justify-center animate-glow"
               >
-                <Music2 className="w-12 h-12 text-white" />
+                <img
+                  src="https://i.ibb.co/t6CZpKR/image-circulaire-recadree-1.png"
+                  alt="MoonWave Records Logo"
+                  className="w-full h-full object-cover"
+                />
               </motion.div>
 
               {/* Title */}
