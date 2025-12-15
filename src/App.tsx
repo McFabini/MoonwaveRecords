@@ -13,7 +13,6 @@ import { TermsOfService } from './components/TermsOfService';
 import { CookiesPolicy } from './components/CookiesPolicy';
 import { Toaster } from './components/ui/sonner';
 import { WelcomeAnimation } from './components/WelcomeAnimation';
-import faviconImage from 'figma:asset/6439fd03238d5a7be71fc789feaf4f0b1425d189.png';
 
 type Section = 'home' | 'artists' | 'services' | 'music' | 'demos' | 'contact' | 'legal' | 'privacy' | 'terms' | 'cookies';
 
@@ -25,14 +24,23 @@ export default function App() {
     // Set page title
     document.title = 'MoonWave Records';
     
-    // Set favicon
+    // Set favicon using the hosted logo URL
     let link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
     if (!link) {
       link = document.createElement('link');
       link.rel = 'icon';
       document.head.appendChild(link);
     }
-    link.href = faviconImage;
+    link.href = 'https://i.ibb.co/t6CZpKR/image-circulaire-recadree-1.png';
+    
+    // Also add apple-touch-icon for iOS devices
+    let appleLink = document.querySelector("link[rel='apple-touch-icon']") as HTMLLinkElement;
+    if (!appleLink) {
+      appleLink = document.createElement('link');
+      appleLink.rel = 'apple-touch-icon';
+      document.head.appendChild(appleLink);
+    }
+    appleLink.href = 'https://i.ibb.co/t6CZpKR/image-circulaire-recadree-1.png';
   }, []);
 
   useEffect(() => {
