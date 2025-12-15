@@ -13,12 +13,27 @@ import { TermsOfService } from './components/TermsOfService';
 import { CookiesPolicy } from './components/CookiesPolicy';
 import { Toaster } from './components/ui/sonner';
 import { WelcomeAnimation } from './components/WelcomeAnimation';
+import faviconImage from 'figma:asset/6439fd03238d5a7be71fc789feaf4f0b1425d189.png';
 
 type Section = 'home' | 'artists' | 'services' | 'music' | 'demos' | 'contact' | 'legal' | 'privacy' | 'terms' | 'cookies';
 
 export default function App() {
   const [currentSection, setCurrentSection] = useState<Section>('home');
   const [showWelcome, setShowWelcome] = useState(true);
+
+  useEffect(() => {
+    // Set page title
+    document.title = 'MoonWave Records';
+    
+    // Set favicon
+    let link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
+    if (!link) {
+      link = document.createElement('link');
+      link.rel = 'icon';
+      document.head.appendChild(link);
+    }
+    link.href = faviconImage;
+  }, []);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
