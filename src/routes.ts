@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router';
+import { createBrowserRouter, Navigate } from 'react-router';
 import { Layout } from './components/Layout';
 import { Home } from './pages/Home';
 import { ServicesPage } from './pages/ServicesPage';
@@ -17,7 +17,8 @@ export const router = createBrowserRouter([
     path: '/',
     Component: Layout,
     children: [
-      { index: true, Component: Home },
+      { index: true, element: <Navigate to="/home" replace /> },
+      { path: 'home', Component: Home },
       { path: 'services', Component: ServicesPage },
       { path: 'artistes', Component: ArtistsPage },
       { path: 'musique', Component: MusicPage },

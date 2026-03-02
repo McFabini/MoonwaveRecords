@@ -13,7 +13,7 @@ export function Layout() {
   useEffect(() => {
     // Show welcome animation only on first visit to home page
     const hasVisited = sessionStorage.getItem('hasVisited');
-    if (!hasVisited && location.pathname === '/') {
+    if (!hasVisited && (location.pathname === '/' || location.pathname === '/home')) {
       setShowWelcome(true);
       sessionStorage.setItem('hasVisited', 'true');
     }
@@ -22,7 +22,7 @@ export function Layout() {
   const handleNavigate = (section: string) => {
     // Map section names back to URLs
     const routeMap: { [key: string]: string } = {
-      'home': '/',
+      'home': '/home',
       'artists': '/artistes',
       'services': '/services',
       'music': '/musique',
@@ -33,7 +33,7 @@ export function Layout() {
       'terms': '/conditions',
       'cookies': '/cookies',
     };
-    navigate(routeMap[section] || '/');
+    navigate(routeMap[section] || '/home');
   };
 
   const handleWelcomeComplete = () => {

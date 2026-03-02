@@ -12,7 +12,7 @@ export function Header({ onNavigate, currentSection }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navItems = [
-    { id: 'home', label: 'Accueil', path: '/' },
+    { id: 'home', label: 'Accueil', path: '/home' },
     { id: 'artists', label: 'Artistes', path: '/artistes' },
     { id: 'services', label: 'Services', path: '/services' },
     { id: 'music', label: 'Musique', path: '/musique' },

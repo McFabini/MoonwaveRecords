@@ -77,7 +77,7 @@ export function WelcomeAnimation({ onComplete }: WelcomeAnimationProps) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
-                className="text-5xl md:text-7xl bg-gradient-to-r from-white via-accent to-primary bg-clip-text text-transparent"
+                className="text-5xl md:text-7xl bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 bg-clip-text text-transparent font-bold"
               >
                 Bienvenue
               </motion.h1>
@@ -118,10 +118,10 @@ export function WelcomeAnimation({ onComplete }: WelcomeAnimationProps) {
                 transition={{ duration: 0.8, delay: 0.5 }}
                 className="space-y-4"
               >
-                <h1 className="text-6xl md:text-8xl tracking-wider bg-gradient-to-r from-white via-accent to-primary bg-clip-text text-transparent">
+                <h1 className="text-6xl md:text-8xl tracking-wider bg-gradient-to-r from-purple-600 via-violet-500 to-indigo-600 bg-clip-text text-transparent font-bold">
                   MoonWave
                 </h1>
-                <h2 className="text-4xl md:text-5xl tracking-widest bg-gradient-to-r from-primary via-accent to-white bg-clip-text text-transparent">
+                <h2 className="text-4xl md:text-5xl tracking-widest bg-gradient-to-r from-indigo-600 via-purple-500 to-violet-600 bg-clip-text text-transparent font-bold">
                   RECORDS
                 </h2>
               </motion.div>
@@ -160,7 +160,7 @@ export function WelcomeAnimation({ onComplete }: WelcomeAnimationProps) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="text-5xl md:text-7xl tracking-wider bg-gradient-to-r from-white via-accent to-primary bg-clip-text text-transparent"
+                className="text-5xl md:text-7xl tracking-wider bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 bg-clip-text text-transparent font-bold"
               >
                 MoonWave Records
               </motion.h1>
