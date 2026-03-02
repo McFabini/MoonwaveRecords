@@ -12,12 +12,12 @@ export function Header({ onNavigate, currentSection }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navItems = [
-    { id: 'home', label: 'Accueil' },
-    { id: 'artists', label: 'Artistes' },
-    { id: 'services', label: 'Services' },
-    { id: 'music', label: 'Musique' },
-    { id: 'demos', label: 'Démos' },
-    { id: 'contact', label: 'Contact' },
+    { id: 'home', label: 'Accueil', path: '/' },
+    { id: 'artists', label: 'Artistes', path: '/artistes' },
+    { id: 'services', label: 'Services', path: '/services' },
+    { id: 'music', label: 'Musique', path: '/musique' },
+    { id: 'demos', label: 'Démos', path: '/demos' },
+    { id: 'contact', label: 'Contact', path: '/contact' },
   ];
 
   const handleNavClick = (section: string) => {

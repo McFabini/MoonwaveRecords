@@ -51,7 +51,7 @@ export function Footer({ onNavigate }: FooterProps) {
                 </button>
               </li>
               <li>
-                <button onClick={() => onNavigate('artists')} className="text-foreground/60 hover:text-primary transition-colors">
+                <button onClick={() => onNavigate('artistes')} className="text-foreground/60 hover:text-primary transition-colors">
                   Artistes
                 </button>
               </li>
@@ -61,7 +61,7 @@ export function Footer({ onNavigate }: FooterProps) {
                 </button>
               </li>
               <li>
-                <button onClick={() => onNavigate('music')} className="text-foreground/60 hover:text-primary transition-colors">
+                <button onClick={() => onNavigate('musique')} className="text-foreground/60 hover:text-primary transition-colors">
                   Musique
                 </button>
               </li>

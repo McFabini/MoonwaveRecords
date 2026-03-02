@@ -187,10 +187,10 @@ export function Contact() {
                   <div>
                     <p className="text-sm text-foreground/60 mb-1">Téléphone</p>
                     <a
-                      href="tel:+33749437577"
+                      href="tel:+33184160174"
                       className="text-foreground hover:text-primary transition-colors"
                     >
-                      +33 7 49 43 75 77
+                      +33 1 84 16 01 74
                     </a>
                   </div>
                 </div>
